@@ -1,0 +1,48 @@
+# ─── Java / Maven ──────────────────────────
+backend/target/
+backend/*.jar
+backend/*.war
+backend/.mvn/
+
+# ─── Node / Frontend ───────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/dev-dist/
+frontend/*.log
+frontend/.vite/
+
+# ─── IDE ───────────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+.classpath
+.project
+.settings/
+.factorypath
+.springBeans
+
+# ─── OS ────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Environment ───────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Logs ──────────────────────────────────
+*.log
+logs/
+
+# ─── Docker ───────────────────────────────
+docker-data/
+postgres-data/
+
+# ─── Uploads / Generated Files ────────────
+uploads/
+*.pid
+.claude
