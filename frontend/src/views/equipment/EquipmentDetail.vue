@@ -2,17 +2,17 @@
   <div class="page-container">
     <el-page-header @back="router.back()" title="返回" :content="equipment.name || '设备详情'" />
 
-    <el-row :gutter="20" style="margin-top: 20px">
+    <el-row :gutter="20" style="margin-top: 24px">
       <el-col :span="16">
         <el-card>
-          <template #header><span>基本信息</span></template>
-          <el-descriptions :column="2" border>
+          <template #header>基本信息</template>
+          <el-descriptions :column="2">
             <el-descriptions-item label="名称">{{ equipment.name }}</el-descriptions-item>
             <el-descriptions-item label="型号">{{ equipment.model || '-' }}</el-descriptions-item>
             <el-descriptions-item label="序列号">{{ equipment.serialNumber || '-' }}</el-descriptions-item>
             <el-descriptions-item label="类型">{{ equipment.category || '-' }}</el-descriptions-item>
             <el-descriptions-item label="状态">
-              <el-tag :type="statusType(equipment.status)">{{ { available: '可用', in_use: '使用中', maintenance: '维护中', retired: '已退役' }[equipment.status] || equipment.status }}</el-tag>
+              <el-tag :type="statusType(equipment.status)" size="small">{{ { available: '可用', in_use: '使用中', maintenance: '维护中', retired: '已退役' }[equipment.status] || equipment.status }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="制造商">{{ equipment.manufacturer || '-' }}</el-descriptions-item>
             <el-descriptions-item label="房间">{{ equipment.roomName || '-' }}</el-descriptions-item>
@@ -22,12 +22,12 @@
       </el-col>
       <el-col :span="8">
         <el-card>
-          <template #header><span>快捷操作</span></template>
+          <template #header>快捷操作</template>
           <div class="quick-actions">
-            <el-button type="primary" :disabled="equipment.status !== 'available'" @click="handleStartUsage">
+            <el-button type="primary" :disabled="equipment.status !== 'available'" @click="handleStartUsage" style="width:100%">
               登录设备
             </el-button>
-            <el-button type="warning" :disabled="equipment.status !== 'in_use'" @click="handleEndUsage">
+            <el-button type="warning" :disabled="equipment.status !== 'in_use'" @click="handleEndUsage" style="width:100%">
               登出设备
             </el-button>
           </div>
@@ -36,7 +36,7 @@
     </el-row>
 
     <el-card style="margin-top: 20px">
-      <template #header><span>使用历史</span></template>
+      <template #header>使用历史</template>
       <el-table :data="usageRecords" stripe>
         <el-table-column prop="userName" label="使用人" width="120" />
         <el-table-column prop="projectName" label="项目" width="160" />
@@ -101,5 +101,14 @@ onMounted(loadData)
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+:deep(.el-descriptions__cell) {
+  padding: 12px 16px !important;
+}
+
+:deep(.el-descriptions__label) {
+  color: var(--color-ink-muted);
+  font-weight: 500;
 }
 </style>

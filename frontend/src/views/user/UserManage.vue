@@ -27,10 +27,12 @@
           <el-tag :type="row.isActive ? 'success' : 'info'" size="small">{{ row.isActive ? '启用' : '停用' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column label="操作" width="80" fixed="right">
         <template #default="{ row }">
-          <el-button text type="primary" @click="showEdit(row)">编辑</el-button>
-          <el-button text type="danger" @click="handleDelete(row.id)">删除</el-button>
+          <div class="action-cell">
+            <el-button text type="primary" @click="showEdit(row)">编辑</el-button>
+            <el-button text type="danger" @click="handleDelete(row.id)">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

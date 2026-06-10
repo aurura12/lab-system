@@ -24,11 +24,13 @@
       <el-table-column prop="memberCount" label="成员数" width="90" />
       <el-table-column prop="startDate" label="开始日期" width="110" />
       <el-table-column prop="endDate" label="结束日期" width="110" />
-      <el-table-column label="操作" width="180" fixed="right">
+      <el-table-column label="操作" width="80" fixed="right">
         <template #default="{ row }">
-          <el-button text type="primary" @click="viewDetail(row.id)">详情</el-button>
-          <el-button text type="primary" @click="showEdit(row)">编辑</el-button>
-          <el-button text type="danger" @click="handleDelete(row.id)">删除</el-button>
+          <div class="action-cell">
+            <el-button text type="primary" @click="viewDetail(row.id)">详情</el-button>
+            <el-button text type="primary" @click="showEdit(row)">编辑</el-button>
+            <el-button text type="danger" @click="handleDelete(row.id)">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

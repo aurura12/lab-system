@@ -1,9 +1,9 @@
 <template>
   <el-container class="layout-container">
-    <el-aside :width="isCollapse ? '64px' : '220px'" class="sidebar">
-      <div class="logo">
-        <span v-if="!isCollapse">实验室管理系统</span>
-        <span v-else>实</span>
+    <el-aside :width="isCollapse ? '64px' : '240px'" class="sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">L</div>
+        <span v-if="!isCollapse" class="logo-text">实验室管理</span>
       </div>
       <el-menu
         :default-active="activeMenu"
@@ -102,32 +102,54 @@ function handleCommand(command: string) {
 }
 
 .sidebar {
-  background: #001529;
-  transition: width 0.3s;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-hairline);
+  transition: width 0.25s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
-  .logo {
+  .logo-area {
     height: 60px;
     display: flex;
     align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+    border-bottom: 1px solid var(--color-hairline);
+    flex-shrink: 0;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    color: #fff;
-    font-size: 18px;
     font-weight: 700;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.125px;
+    white-space: nowrap;
   }
 
   .sidebar-menu {
-    border-right: none;
     background: transparent;
+    padding: 8px 0;
+    flex: 1;
+    overflow-y: auto;
 
-    :deep(.el-menu-item) {
-      color: rgba(255, 255, 255, 0.65);
-
-      &:hover, &.is-active {
-        color: #fff;
-        background: #1890ff;
-      }
+    .el-menu-item {
+      margin: 2px 10px;
+      font-size: 15px;
     }
   }
 }
@@ -136,10 +158,11 @@ function handleCommand(command: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  padding: 0 20px;
-  z-index: 1;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline);
+  padding: 0 24px;
+  height: 60px !important;
+  flex-shrink: 0;
 
   .header-left {
     display: flex;
@@ -147,17 +170,16 @@ function handleCommand(command: string) {
     gap: 12px;
 
     .collapse-btn {
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
-      color: #606266;
-
-      &:hover { color: #409eff; }
+      color: var(--color-ink-muted);
+      &:hover { color: var(--color-primary); }
     }
 
     .page-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #303133;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-ink-secondary);
     }
   }
 
@@ -167,15 +189,15 @@ function handleCommand(command: string) {
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      color: #606266;
-
-      &:hover { color: #409eff; }
+      color: var(--color-ink-secondary);
+      font-size: 14px;
+      &:hover { color: var(--color-primary); }
     }
   }
 }
 
 .main-content {
-  background: #f0f2f5;
+  background: var(--color-canvas-soft);
   overflow-y: auto;
 }
 </style>

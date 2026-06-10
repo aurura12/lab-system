@@ -1,82 +1,664 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+// ========================================
+// Notion-inspired Design System
+// Based on DESIGN.md
+// ========================================
+
+// ─── CSS Custom Properties (Element Plus Overrides) ──
+
+:root {
+  // Brand
+  --color-primary: #0075de;
+  --color-primary-active: #005bab;
+  --color-secondary: #213183;
+
+  // Surface
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #f6f5f4;
+  --color-surface: #ffffff;
+  --color-hairline: #e6e6e6;
+
+  // Text
+  --color-ink: #000000;
+  --color-ink-secondary: #31302e;
+  --color-ink-muted: #615d58;
+  --color-ink-faint: #a39e98;
+  --color-on-primary: #ffffff;
+
+  // Accent (sticker palette — decorative only)
+  --accent-sky: #62aef0;
+  --accent-purple: #d6b6f6;
+  --accent-purple-deep: #391c57;
+  --accent-pink: #ff64c8;
+  --accent-orange: #dd5b00;
+  --accent-orange-deep: #793400;
+  --accent-teal: #2a9d99;
+  --accent-green: #1aae39;
+  --accent-brown: #523410;
+
+  // Element Plus overrides
+  --el-color-primary: #0075de;
+  --el-color-primary-dark-2: #005bab;
+  --el-color-primary-light-3: #e6f2ff;
+  --el-color-primary-light-5: #cce5ff;
+  --el-color-primary-light-7: #b3d8ff;
+  --el-color-primary-light-8: #99ccff;
+  --el-color-primary-light-9: #80bfff;
+  --el-color-success: #1aae39;
+  --el-color-warning: #dd5b00;
+  --el-color-danger: #e74c3c;
+  --el-color-info: #a39e98;
+  --el-border-color: #e6e6e6;
+  --el-border-color-light: #e6e6e6;
+  --el-border-color-lighter: #f0f0f0;
+  --el-border-color-extra-light: #f5f5f5;
+  --el-border-radius-base: 4px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 9999px;
+  --el-border-radius-circle: 9999px;
+  --el-font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --el-font-size-base: 15px;
+  --el-font-size-small: 14px;
+  --el-font-size-large: 16px;
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: #f6f5f4;
+  --el-bg-color-overlay: #ffffff;
+  --el-text-color-primary: #000000;
+  --el-text-color-regular: #31302e;
+  --el-text-color-secondary: #615d58;
+  --el-text-color-placeholder: #a39e98;
+  --el-fill-color: #f6f5f4;
+  --el-fill-color-light: #fafafa;
+  --el-fill-color-lighter: #fbfbfb;
+  --el-fill-color-blank: #ffffff;
+  --el-box-shadow: 0 0.175px 1.041px rgba(0,0,0,0.01), 0 0.8px 2.925px rgba(0,0,0,0.02), 0 2.025px 7.847px rgba(0,0,0,0.027), 0 4px 18px rgba(0,0,0,0.04);
+  --el-box-shadow-light: 0 0.175px 1.041px rgba(0,0,0,0.01), 0 0.8px 2.925px rgba(0,0,0,0.02), 0 2.025px 7.847px rgba(0,0,0,0.027), 0 4px 18px rgba(0,0,0,0.04);
+  --el-box-shadow-lighter: 0 0.175px 1.041px rgba(0,0,0,0.005), 0 0.8px 2.925px rgba(0,0,0,0.01), 0 2.025px 7.847px rgba(0,0,0,0.015), 0 4px 18px rgba(0,0,0,0.02);
+  --el-disabled-bg-color: #f6f5f4;
+  --el-disabled-text-color: #a39e98;
+  --el-table-border-color: #e6e6e6;
+  --el-table-header-bg-color: #fafafa;
+  --el-table-row-hover-bg-color: #f6f5f4;
+  --el-table-striped-row-bg-color: #fafafa;
+  --el-menu-item-height: 44px;
+  --el-menu-sub-item-height: 40px;
+  --el-dialog-border-radius: 12px;
+  --el-messagebox-border-radius: 12px;
 }
+
+// ─── Reset ───────────────────────
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body, #app {
   height: 100%;
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  background: var(--color-canvas-soft);
+  color: var(--color-ink);
+}
+
+// ─── Buttons ─────────────────────
+
+// Primary CTA — pill-shaped {rounded.full}
+// Note: :not(.is-text) excludes text buttons from pill shape
+.el-button.el-button--primary:not(.is-text) {
+  border-radius: 9999px !important;
+  padding: 10px 28px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  border: none !important;
+  transition: all 0.15s ease;
+}
+
+.el-button.el-button--primary:not(.is-text):active {
+  background: var(--color-primary-active) !important;
+  transform: scale(0.97);
+}
+
+.el-button.el-button--primary:not(.is-text).is-disabled {
+  opacity: 0.5;
+}
+
+// Utility buttons — {rounded.md}
+.el-button.el-button--default {
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  border: 1px solid var(--color-hairline) !important;
+  background: var(--color-surface) !important;
+  color: var(--color-ink) !important;
+  transition: all 0.15s ease;
+}
+
+.el-button.el-button--default:hover {
+  border-color: #ccc !important;
+  background: #fafafa !important;
+}
+
+.el-button.el-button--default:active {
+  background: #f0f0f0 !important;
+}
+
+// Text buttons — inline link style
+// Matches both: <el-button text> (adds .is-text) and <el-button type="text"> (adds .el-button--text)
+// Color is handled by Element Plus CSS variables (--el-button-text-color), not overridden here
+.el-button.is-text,
+.el-button.el-button--text {
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 6px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.el-button.is-text:hover,
+.el-button.el-button--text:hover {
+  background: transparent !important;
+  opacity: 0.75;
+}
+
+// Small utility buttons
+.el-button.el-button--small {
+  padding: 4px 14px !important;
+  font-size: 14px !important;
+}
+
+// ─── Form Inputs ─────────────────
+
+// Text inputs — {rounded.xs} (4px), 6px padding
+.el-input__wrapper {
+  border-radius: 4px !important;
+  border: 1px solid var(--color-hairline) !important;
+  box-shadow: none !important;
+  padding: 2px 6px !important;
+  background: var(--color-surface) !important;
+}
+
+.el-input__wrapper.is-focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+.el-input__wrapper:hover {
+  border-color: #ccc !important;
+}
+
+.el-input__inner {
+  height: 30px !important;
+  font-size: 15px !important;
+  color: var(--color-ink) !important;
+}
+
+.el-input__inner::placeholder {
+  color: var(--color-ink-faint) !important;
+}
+
+// Textarea
+.el-textarea__inner {
+  border-radius: 4px !important;
+  border: 1px solid var(--color-hairline) !important;
+  box-shadow: none !important;
+  padding: 6px 8px !important;
+  font-family: inherit !important;
+  font-size: 15px !important;
+  color: var(--color-ink) !important;
+}
+
+.el-textarea__inner:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px var(--color-primary) !important;
+}
+
+// Select
+.el-select .el-input__wrapper {
+  border-radius: 4px !important;
+}
+
+// Date picker
+.el-date-editor .el-input__wrapper {
+  border-radius: 4px !important;
+}
+
+// Form items
+.el-form-item {
+  margin-bottom: 18px !important;
+}
+
+.el-form-item__label {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--color-ink-secondary) !important;
+  padding-bottom: 4px !important;
+}
+
+// ─── Cards ───────────────────────
+
+// Elevated card variant
+.el-card {
+  border-radius: 12px !important;
+  border: 1px solid var(--color-hairline) !important;
+  box-shadow: none !important;
+  background: var(--color-surface) !important;
+  overflow: hidden;
+}
+
+.el-card.is-never-shadow {
+  border: 1px solid var(--color-hairline) !important;
+  box-shadow: none !important;
+}
+
+.el-card__header {
+  padding: 20px 24px !important;
+  border-bottom: 1px solid var(--color-hairline) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.el-card__body {
+  padding: 24px !important;
+}
+
+// ─── Tables ──────────────────────
+
+.el-table {
+  font-size: 15px !important;
+  color: var(--color-ink) !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.el-table th.el-table__cell {
+  background: #fafafa !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink-muted) !important;
+  letter-spacing: 0.125px !important;
+  text-transform: uppercase !important;
+}
+
+.el-table th.el-table__cell > .cell {
+  padding: 8px 12px !important;
+}
+
+.el-table td.el-table__cell > .cell {
+  padding: 10px 12px !important;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: #fafafa !important;
+}
+
+.el-table__body tr:hover > td {
+  background: #f6f5f4 !important;
+}
+
+.el-table__inner-wrapper::before {
+  display: none !important;
+}
+
+.el-table__border-left-patch {
+  display: none !important;
+}
+
+.el-table--border::after {
+  display: none !important;
+}
+
+// Table action cell — vertical button stack
+.action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.action-cell .el-button {
+  margin-left: 0 !important;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  padding-left: 0 !important;
+}
+
+// ─── Pagination ──────────────────
+
+.el-pagination {
+  font-size: 14px !important;
+  color: var(--color-ink) !important;
+}
+
+.el-pagination button {
+  border-radius: 4px !important;
+}
+
+.el-pager li {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  color: var(--color-ink) !important;
+}
+
+.el-pager li.is-active {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+// ─── Tags / Badges ───────────────
+
+.el-tag {
+  border-radius: 9999px !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.125px !important;
+  height: 22px !important;
+  line-height: 22px !important;
+  border: none !important;
+}
+
+.el-tag.el-tag--primary {
+  background: #e6f2ff !important;
+  color: var(--color-primary) !important;
+}
+
+.el-tag.el-tag--success {
+  background: #e6f7ed !important;
+  color: #1a8731 !important;
+}
+
+.el-tag.el-tag--warning {
+  background: #fff3e6 !important;
+  color: #bf4d00 !important;
+}
+
+.el-tag.el-tag--danger {
+  background: #fde8e8 !important;
+  color: #c0392b !important;
+}
+
+.el-tag.el-tag--info {
+  background: #f0efee !important;
+  color: #615d58 !important;
+}
+
+// ─── Dialogs / Modals ────────────
+
+.el-dialog {
+  border-radius: 12px !important;
+  box-shadow: 0 0.175px 1.041px rgba(0,0,0,0.02), 0 0.8px 2.925px rgba(0,0,0,0.03), 0 2.025px 7.847px rgba(0,0,0,0.04), 0 4px 18px rgba(0,0,0,0.05), 0 23px 52px rgba(0,0,0,0.05) !important;
+  padding: 0 !important;
+}
+
+.el-dialog__header {
+  padding: 20px 24px 0 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink) !important;
+}
+
+.el-dialog__body {
+  padding: 20px 24px !important;
+}
+
+.el-dialog__footer {
+  padding: 0 24px 20px !important;
+  border-top: none !important;
+}
+
+// ─── Drawers ─────────────────────
+
+.el-drawer {
+  border-radius: 12px 0 0 12px !important;
+}
+
+.el-drawer__header {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink) !important;
+  margin-bottom: 0 !important;
+  padding: 20px 24px !important;
+  border-bottom: 1px solid var(--color-hairline) !important;
+}
+
+// ─── Descriptions ────────────────
+
+.el-descriptions__title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink) !important;
+}
+
+.el-descriptions__cell {
+  font-size: 15px !important;
+}
+
+.el-descriptions--border .el-descriptions__cell {
+  border: 1px solid var(--color-hairline) !important;
+}
+
+// ─── Page Header ─────────────────
+
+.el-page-header {
+  padding: 0 !important;
+}
+
+.el-page-header__title {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: var(--color-primary) !important;
+}
+
+.el-page-header__content {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--color-ink) !important;
+  letter-spacing: -0.25px !important;
+}
+
+// ─── Menu ────────────────────────
+
+.el-menu {
+  border-right: none !important;
+}
+
+.el-menu-item {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: var(--color-ink-secondary) !important;
+  border-radius: 6px !important;
+  margin: 2px 8px !important;
+  width: auto !important;
+  transition: all 0.1s ease;
+}
+
+.el-menu-item:hover {
+  background: var(--color-canvas-soft) !important;
+  color: var(--color-ink) !important;
+}
+
+.el-menu-item.is-active {
+  background: #e6f2ff !important;
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+.el-menu-item .el-icon {
+  color: var(--color-ink-muted) !important;
+  margin-right: 10px !important;
+}
+
+.el-menu-item.is-active .el-icon {
+  color: var(--color-primary) !important;
+}
+
+// ─── Timeline ────────────────────
+
+.el-timeline-item__timestamp {
+  font-size: 12px !important;
+  color: var(--color-ink-faint) !important;
+  letter-spacing: 0.125px !important;
+}
+
+// ─── Switch ──────────────────────
+
+.el-switch.is-checked .el-switch__core {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+// ─── Dropdown ────────────────────
+
+.el-dropdown-menu__item {
+  font-size: 14px !important;
+  color: var(--color-ink) !important;
+}
+
+.el-dropdown-menu__item:hover {
+  background: var(--color-canvas-soft) !important;
+  color: var(--color-ink) !important;
+}
+
+// ─── Upload ──────────────────────
+
+.el-upload {
+  border-radius: 8px !important;
+}
+
+.el-upload-list__item {
+  border-radius: 4px !important;
+}
+
+// ========================================
+// Notion Utility Classes
+// ========================================
+
+// Page container — warm canvas with generous padding
 .page-container {
-  padding: 20px;
+  padding: 28px;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
+// Page headers
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   h2 {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-ink);
+    letter-spacing: -0.25px;
+    line-height: 1.27;
   }
 }
 
+// Search/filter bars
 .search-bar {
   display: flex;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
   align-items: center;
 }
 
+// Stat cards (Dashboard)
 .stat-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--color-hairline);
 
   .stat-value {
     font-size: 28px;
     font-weight: 700;
-    color: #303133;
+    color: var(--color-ink);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
   }
 
   .stat-label {
     font-size: 14px;
-    color: #909399;
-    margin-top: 4px;
+    font-weight: 400;
+    color: var(--color-ink-muted);
+    margin-top: 6px;
   }
 }
 
+// Chart cards (Dashboard)
 .chart-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .chart-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--color-hairline);
 
   .chart-title {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #303133;
+    color: var(--color-ink);
+    letter-spacing: -0.125px;
+  }
+}
+
+// Section spacing
+.section-gap {
+  margin-bottom: 24px;
+}
+
+// Feature card with hairline
+.feature-card {
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--color-hairline);
+}
+
+// Empty state
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-ink-faint);
+  font-size: 14px;
+}
+
+// Inline text link
+.text-link {
+  color: var(--color-primary);
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
   }
 }

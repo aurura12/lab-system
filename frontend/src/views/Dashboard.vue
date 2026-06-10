@@ -99,7 +99,7 @@ const utilizationOption = computed(() => ({
   series: [{
     type: 'bar',
     data: utilizationData.value.map((d: any) => d.usageHours),
-    itemStyle: { color: '#409eff' },
+    itemStyle: { color: '#0075de' },
   }],
 }))
 
@@ -115,7 +115,7 @@ const trendOption = computed(() => ({
     data: trendData.value.map((d: any) => d.totalHours),
     smooth: true,
     areaStyle: { opacity: 0.3 },
-    itemStyle: { color: '#67c23a' },
+    itemStyle: { color: '#0075de' },
   }],
 }))
 
@@ -161,11 +161,11 @@ onMounted(async () => {
 
   .activity-user {
     font-weight: 600;
-    color: #303133;
+    color: var(--color-ink);
   }
 
   .activity-desc {
-    color: #606266;
+    color: var(--color-ink-muted);
   }
 }
 </style>

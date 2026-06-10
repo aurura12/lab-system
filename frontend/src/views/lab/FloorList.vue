@@ -6,16 +6,14 @@
     </div>
 
     <div v-for="lab in labs" :key="lab.id" class="lab-section">
-      <el-card class="lab-card">
-        <template #header>
-          <div class="card-header">
-            <span>{{ lab.name }}</span>
-            <div>
-              <el-button text @click="showAddFloor(lab.id)">添加楼层</el-button>
-              <el-button text type="danger" @click="handleDeleteLab(lab.id)">删除</el-button>
-            </div>
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <span class="lab-name">{{ lab.name }}</span>
+          <div class="lab-actions">
+            <el-button size="small" @click="showAddFloor(lab.id)">添加楼层</el-button>
+            <el-button size="small" @click="handleDeleteLab(lab.id)">删除</el-button>
           </div>
-        </template>
+        </div>
         <p class="lab-desc">{{ lab.description || '暂无描述' }}</p>
         <p class="lab-address">{{ lab.address || '' }}</p>
 
@@ -28,11 +26,11 @@
             暂无楼层，点击"添加楼层"创建
           </div>
         </div>
-      </el-card>
+      </div>
     </div>
 
     <!-- Add Lab Dialog -->
-    <el-dialog v-model="labDialogVisible" title="添加实验室" width="400px">
+    <el-dialog v-model="labDialogVisible" title="添加实验室" width="420px">
       <el-form :model="labForm" label-width="80px">
         <el-form-item label="名称">
           <el-input v-model="labForm.name" />
@@ -51,7 +49,7 @@
     </el-dialog>
 
     <!-- Add Floor Dialog -->
-    <el-dialog v-model="floorDialogVisible" title="添加楼层" width="400px">
+    <el-dialog v-model="floorDialogVisible" title="添加楼层" width="420px">
       <el-form :model="floorForm" label-width="100px">
         <el-form-item label="楼层号">
           <el-input-number v-model="floorForm.floorNumber" :min="1" />
@@ -67,22 +65,25 @@
     </el-dialog>
 
     <!-- Floor Detail (Rooms) -->
-    <el-drawer v-model="floorDrawerVisible" :title="`${currentFloor?.name || '楼层'} - 房间列表`" size="60%">
+    <el-drawer v-model="floorDrawerVisible" size="50%">
+      <template #header>
+        <span>{{ currentFloor?.name || '楼层' }} · 房间列表</span>
+      </template>
       <div class="rooms-header">
         <el-button type="primary" @click="showAddRoom">添加房间</el-button>
       </div>
       <div class="rooms-grid">
-        <el-card v-for="room in floorRooms" :key="room.id" class="room-card" shadow="hover">
-          <div class="room-number">房间 {{ room.roomNumber }}</div>
+        <div v-for="room in floorRooms" :key="room.id" class="room-card">
+          <div class="room-number">{{ room.roomNumber }}</div>
           <div class="room-name">{{ room.name || '' }}</div>
           <div class="room-area" v-if="room.areaSqm">{{ room.areaSqm }} m²</div>
-        </el-card>
+        </div>
         <div v-if="!floorRooms.length" class="empty-rooms">暂无房间</div>
       </div>
     </el-drawer>
 
     <!-- Add Room Dialog -->
-    <el-dialog v-model="roomDialogVisible" title="添加房间" width="400px">
+    <el-dialog v-model="roomDialogVisible" title="添加房间" width="420px">
       <el-form :model="roomForm" label-width="100px">
         <el-form-item label="房间号">
           <el-input v-model="roomForm.roomNumber" />
@@ -191,22 +192,42 @@ onMounted(loadLabs)
   margin-bottom: 20px;
 }
 
-.card-header {
+.lab-card {
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--color-hairline);
+}
+
+.lab-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 600;
-}
-
-.lab-desc {
-  color: #606266;
   margin-bottom: 8px;
 }
 
+.lab-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-ink);
+  letter-spacing: -0.125px;
+}
+
+.lab-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.lab-desc {
+  font-size: 15px;
+  color: var(--color-ink-muted);
+  margin-bottom: 4px;
+}
+
 .lab-address {
-  color: #909399;
-  font-size: 13px;
-  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--color-ink-faint);
+  margin-bottom: 20px;
 }
 
 .floors-grid {
@@ -216,65 +237,85 @@ onMounted(loadLabs)
 }
 
 .floor-card {
-  background: #f5f7fa;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  padding: 20px 16px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: #ecf5ff;
-    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow:
+      0 0.175px 1.041px rgba(0,0,0,0.01),
+      0 0.8px 2.925px rgba(0,0,0,0.02),
+      0 2.025px 7.847px rgba(0,0,0,0.027),
+      0 4px 18px rgba(0,0,0,0.04);
   }
 
   .floor-number {
     font-size: 24px;
     font-weight: 700;
-    color: #409eff;
+    color: var(--color-primary);
+    letter-spacing: -0.5px;
   }
 
   .floor-name {
     font-size: 13px;
-    color: #606266;
+    color: var(--color-ink-muted);
     margin-top: 4px;
   }
 }
 
 .empty-floors, .empty-rooms {
-  color: #909399;
+  color: var(--color-ink-faint);
   grid-column: 1 / -1;
   text-align: center;
-  padding: 20px;
+  padding: 28px 20px;
+  font-size: 14px;
 }
 
 .rooms-header {
   margin-bottom: 16px;
+  padding: 0 24px;
 }
 
 .rooms-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 12px;
+  padding: 0 24px 24px;
 }
 
 .room-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  padding: 20px;
   cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
 
   .room-number {
     font-size: 18px;
     font-weight: 600;
-    color: #303133;
+    color: var(--color-ink);
+    letter-spacing: -0.125px;
   }
 
   .room-name {
-    color: #606266;
+    font-size: 14px;
+    color: var(--color-ink-muted);
     margin-top: 4px;
   }
 
   .room-area {
-    color: #909399;
     font-size: 13px;
+    color: var(--color-ink-faint);
     margin-top: 4px;
   }
 }

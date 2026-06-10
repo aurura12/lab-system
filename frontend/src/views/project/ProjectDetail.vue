@@ -2,13 +2,13 @@
   <div class="page-container">
     <el-page-header @back="router.back()" title="返回" :content="project.name || '项目详情'" />
 
-    <el-card style="margin-top: 20px">
-      <template #header><span>项目信息</span></template>
-      <el-descriptions :column="2" border>
+    <el-card style="margin-top: 24px">
+      <template #header>项目信息</template>
+      <el-descriptions :column="2">
         <el-descriptions-item label="名称">{{ project.name }}</el-descriptions-item>
         <el-descriptions-item label="编号">{{ project.code || '-' }}</el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="project.status === 'active' ? 'success' : project.status === 'paused' ? 'warning' : 'info'">{{ { active: '进行中', paused: '暂停', completed: '已完成' }[project.status] || project.status }}</el-tag>
+          <el-tag :type="project.status === 'active' ? 'success' : project.status === 'paused' ? 'warning' : 'info'" size="small">{{ { active: '进行中', paused: '暂停', completed: '已完成' }[project.status] || project.status }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="负责人">{{ project.ownerName || '-' }}</el-descriptions-item>
         <el-descriptions-item label="开始日期">{{ project.startDate || '-' }}</el-descriptions-item>
@@ -19,9 +19,9 @@
 
     <el-card style="margin-top: 20px">
       <template #header>
-        <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card-header-flex">
           <span>成员列表</span>
-          <el-button type="primary" size="small" @click="showAddMember">添加成员</el-button>
+          <el-button size="small" @click="showAddMember">添加成员</el-button>
         </div>
       </template>
       <el-table :data="members" stripe>
@@ -99,3 +99,21 @@ async function handleRemoveMember(userId: string) {
 
 onMounted(loadData)
 </script>
+
+<style scoped lang="scss">
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+:deep(.el-descriptions__cell) {
+  padding: 12px 16px !important;
+}
+
+:deep(.el-descriptions__label) {
+  color: var(--color-ink-muted);
+  font-weight: 500;
+}
+</style>
