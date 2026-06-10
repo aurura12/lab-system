@@ -10,7 +10,7 @@
             <el-descriptions-item label="名称">{{ equipment.name }}</el-descriptions-item>
             <el-descriptions-item label="型号">{{ equipment.model || '-' }}</el-descriptions-item>
             <el-descriptions-item label="序列号">{{ equipment.serialNumber || '-' }}</el-descriptions-item>
-            <el-descriptions-item label="类型">{{ equipment.category || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="类型">{{ categoryLabel(equipment.category) }}</el-descriptions-item>
             <el-descriptions-item label="状态">
               <el-tag :type="statusType(equipment.status)" size="small">{{ { available: '可用', in_use: '使用中', maintenance: '维护中', retired: '已退役' }[equipment.status] || equipment.status }}</el-tag>
             </el-descriptions-item>
@@ -71,6 +71,10 @@ function statusType(s: string) {
   return { available: 'success', in_use: 'primary', maintenance: 'warning', retired: 'info' }[s] || 'info'
 }
 
+function categoryLabel(c: string) {
+  return { spectrometer: '光谱仪', microscope: '显微镜', centrifuge: '离心机', analyzer: '分析仪', other: '其他' }[c] || c || '-'
+}
+
 async function loadData() {
   const res: any = await getEquipmentById(id)
   equipment.value = res.data
@@ -101,6 +105,11 @@ onMounted(loadData)
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.quick-actions .el-button {
+  margin-left: 0 !important;
+  width: 100%;
 }
 
 :deep(.el-descriptions__cell) {

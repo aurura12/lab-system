@@ -30,7 +30,7 @@
       <el-table-column prop="roomName" label="房间" width="100" />
       <el-table-column prop="category" label="类型" width="120">
         <template #default="{ row }">
-          <el-tag size="small">{{ row.category || '-' }}</el-tag>
+          <el-tag size="small">{{ categoryLabel(row.category) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="status" label="状态" width="110">
@@ -134,6 +134,10 @@ function statusType(s: string) {
 
 function statusLabel(s: string) {
   return { available: '可用', in_use: '使用中', maintenance: '维护中', retired: '已退役' }[s] || s
+}
+
+function categoryLabel(c: string) {
+  return { spectrometer: '光谱仪', microscope: '显微镜', centrifuge: '离心机', analyzer: '分析仪', other: '其他' }[c] || c || '-'
 }
 
 async function loadData() {
