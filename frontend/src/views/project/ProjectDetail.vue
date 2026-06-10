@@ -37,13 +37,33 @@
       </el-table>
     </el-card>
 
-    <el-dialog v-model="memberDialogVisible" title="添加成员" width="400px">
+    <el-dialog v-model="memberDialogVisible" title="添加成员" width="420px">
       <el-form label-width="80px">
-        <el-form-item label="用户ID">
-          <el-input v-model="memberForm.userId" placeholder="请输入用户ID" />
+        <el-form-item label="选择用户">
+          <el-select
+            ref="selectRef"
+            v-model="memberForm.userIds"
+            multiple
+            filterable
+            remote
+            clearable
+            :remote-method="searchUsers"
+            :loading="searching"
+            placeholder="输入姓名、用户名搜索"
+            style="width: 100%"
+            @focus="loadInitialUsers"
+            @change="onMemberSelect"
+          >
+            <el-option
+              v-for="u in userOptions"
+              :key="u.id"
+              :label="`${u.realName || u.username} (${u.username})`"
+              :value="u.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="角色">
-          <el-select v-model="memberForm.roleInProject">
+          <el-select v-model="memberForm.roleInProject" style="width: 100%">
             <el-option label="负责人" value="lead" />
             <el-option label="成员" value="member" />
           </el-select>
@@ -51,16 +71,17 @@
       </el-form>
       <template #footer>
         <el-button @click="memberDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleAddMember">确定</el-button>
+        <el-button type="primary" @click="handleAddMember" :disabled="!memberForm.userIds.length">确定</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getProjectById, getProjectMembers, addProjectMember, removeProjectMember } from '@/api/project'
+import { getUsers } from '@/api/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
@@ -69,7 +90,48 @@ const id = route.params.id as string
 const project = ref<any>({})
 const members = ref<any[]>([])
 const memberDialogVisible = ref(false)
-const memberForm = reactive({ userId: '', roleInProject: 'member' })
+const memberForm = reactive({ userIds: [] as string[], roleInProject: 'member' })
+const userOptions = ref<any[]>([])
+const searching = ref(false)
+const selectRef = ref<any>(null)
+
+async function searchUsers(query: string) {
+  if (!query) {
+    userOptions.value = []
+    return
+  }
+  searching.value = true
+  try {
+    const res: any = await getUsers({ keyword: query, size: 20 })
+    userOptions.value = res.data?.content || []
+  } finally {
+    searching.value = false
+  }
+}
+
+async function loadInitialUsers() {
+  if (!userOptions.value.length) {
+    searching.value = true
+    try {
+      const res: any = await getUsers({ size: 50 })
+      userOptions.value = res.data?.content || []
+    } finally {
+      searching.value = false
+    }
+  }
+}
+
+function onMemberSelect() {
+  nextTick(() => {
+    const el = selectRef.value
+    if (el) {
+      el.blur()
+      nextTick(() => {
+        el.focus()
+      })
+    }
+  })
+}
 
 async function loadData() {
   const res: any = await getProjectById(id)
@@ -79,13 +141,17 @@ async function loadData() {
 }
 
 function showAddMember() {
-  Object.assign(memberForm, { userId: '', roleInProject: 'member' })
+  Object.assign(memberForm, { userIds: [], roleInProject: 'member' })
+  userOptions.value = []
   memberDialogVisible.value = true
 }
 
 async function handleAddMember() {
-  await addProjectMember(id, memberForm)
-  ElMessage.success('成员已添加')
+  if (!memberForm.userIds.length) return
+  for (const uid of memberForm.userIds) {
+    await addProjectMember(id, { userId: uid, roleInProject: memberForm.roleInProject })
+  }
+  ElMessage.success(`已添加 ${memberForm.userIds.length} 名成员`)
   memberDialogVisible.value = false
   loadData()
 }

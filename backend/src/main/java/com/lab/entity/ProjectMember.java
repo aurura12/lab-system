@@ -1,5 +1,7 @@
 package com.lab.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lab.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,11 +12,13 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "project_members", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"project_id", "user_id"})
 })
 public class ProjectMember extends BaseEntity {
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;

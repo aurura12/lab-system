@@ -59,10 +59,11 @@ public class ProjectController {
 
     @PostMapping("/{id}/members")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
-    public ApiResponse<ProjectMember> addMember(@PathVariable UUID id, @RequestBody Map<String, String> body) {
-        UUID userId = UUID.fromString(body.get("userId"));
+    public ApiResponse<Void> addMember(@PathVariable UUID id, @RequestBody Map<String, String> body) {
+        String userId = body.get("userId");
         String role = body.getOrDefault("roleInProject", "member");
-        return ApiResponse.success("Member added", projectService.addMember(id, userId, role));
+        projectService.addMember(id, userId, role);
+        return ApiResponse.success("Member added", null);
     }
 
     @DeleteMapping("/{id}/members/{userId}")

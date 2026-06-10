@@ -91,7 +91,7 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public List<ProjectMember> getProjectMembers(UUID projectId) {
-        return projectMemberRepository.findByProjectId(projectId);
+        return projectMemberRepository.findByProjectIdWithUser(projectId);
     }
 
     @Transactional
@@ -111,6 +111,31 @@ public class ProjectService {
             member.setRoleInProject(ProjectMember.RoleInProject.valueOf(role));
         }
         return projectMemberRepository.save(member);
+    }
+
+    @Transactional
+    public ProjectMember addMember(UUID projectId, String userIdInput, String role) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(userIdInput);
+        } catch (IllegalArgumentException e) {
+            // Not a UUID — try username
+            Optional<User> byUsername = userRepository.findByUsername(userIdInput);
+            if (byUsername.isPresent()) {
+                userId = byUsername.get().getId();
+            } else {
+                // Try real name
+                List<User> byRealName = userRepository.findByRealName(userIdInput);
+                if (byRealName.isEmpty()) {
+                    throw new ResourceNotFoundException("User", "username/realName", userIdInput);
+                }
+                if (byRealName.size() > 1) {
+                    throw new BadRequestException("找到多个同名的用户，请使用用户名或用户ID");
+                }
+                userId = byRealName.get(0).getId();
+            }
+        }
+        return addMember(projectId, userId, role);
     }
 
     @Transactional
