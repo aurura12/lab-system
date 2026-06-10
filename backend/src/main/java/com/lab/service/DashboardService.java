@@ -96,7 +96,7 @@ public class DashboardService {
                     DashboardDTO.RecentActivity activity = new DashboardDTO.RecentActivity();
                     activity.setType("usage");
                     activity.setUserName(record.getUser().getRealName());
-                    activity.setDescription("Used " + record.getEquipment().getName());
+                    activity.setDescription("使用了 " + record.getEquipment().getName());
                     activity.setTimestamp(record.getCreatedAt().toString());
                     activities.add(activity);
                 });
@@ -110,7 +110,7 @@ public class DashboardService {
                     DashboardDTO.RecentActivity activity = new DashboardDTO.RecentActivity();
                     activity.setType("data");
                     activity.setUserName(record.getUser().getRealName());
-                    activity.setDescription("Uploaded " + record.getFileName());
+                    activity.setDescription("上传了 " + record.getFileName());
                     activity.setTimestamp(record.getCreatedAt().toString());
                     activities.add(activity);
                 });

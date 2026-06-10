@@ -40,8 +40,12 @@
       <el-table :data="usageRecords" stripe>
         <el-table-column prop="userName" label="使用人" width="120" />
         <el-table-column prop="projectName" label="项目" width="160" />
-        <el-table-column prop="loginTime" label="登录时间" width="180" />
-        <el-table-column prop="logoutTime" label="登出时间" width="180" />
+        <el-table-column label="登录时间" width="180">
+          <template #default="{ row }">{{ row.loginTime ? row.loginTime.replace('T', ' ').substring(0, 19) : '-' }}</template>
+        </el-table-column>
+        <el-table-column label="登出时间" width="180">
+          <template #default="{ row }">{{ row.logoutTime ? row.logoutTime.replace('T', ' ').substring(0, 19) : '-' }}</template>
+        </el-table-column>
         <el-table-column prop="durationMinutes" label="时长(分钟)" width="120" />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">

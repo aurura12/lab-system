@@ -36,20 +36,20 @@ public class ProjectController {
     @PostMapping
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<ProjectDTO> createProject(@Valid @RequestBody ProjectRequest request) {
-        return ApiResponse.success("Project created", projectService.createProject(request));
+        return ApiResponse.success("项目已创建", projectService.createProject(request));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<ProjectDTO> updateProject(@PathVariable UUID id, @Valid @RequestBody ProjectRequest request) {
-        return ApiResponse.success("Project updated", projectService.updateProject(id, request));
+        return ApiResponse.success("项目已更新", projectService.updateProject(id, request));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<Void> deleteProject(@PathVariable UUID id) {
         projectService.deleteProject(id);
-        return ApiResponse.success("Project deleted", null);
+        return ApiResponse.success("项目已删除", null);
     }
 
     @GetMapping("/{id}/members")
@@ -63,13 +63,13 @@ public class ProjectController {
         String userId = body.get("userId");
         String role = body.getOrDefault("roleInProject", "member");
         projectService.addMember(id, userId, role);
-        return ApiResponse.success("Member added", null);
+        return ApiResponse.success("成员已添加", null);
     }
 
     @DeleteMapping("/{id}/members/{userId}")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<Void> removeMember(@PathVariable UUID id, @PathVariable UUID userId) {
         projectService.removeMember(id, userId);
-        return ApiResponse.success("Member removed", null);
+        return ApiResponse.success("成员已移除", null);
     }
 }

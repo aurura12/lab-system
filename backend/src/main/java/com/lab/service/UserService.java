@@ -45,7 +45,7 @@ public class UserService {
     @Transactional
     public UserDTO createUser(UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new BadRequestException("Username already exists: " + request.getUsername());
+            throw new BadRequestException("用户名已存在: " + request.getUsername());
         }
 
         User user = new User();

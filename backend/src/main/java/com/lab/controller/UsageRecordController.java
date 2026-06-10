@@ -44,11 +44,11 @@ public class UsageRecordController {
                                                     Authentication authentication) {
         // In a real app, get user ID from authentication principal
         // For now, we'll need the user to pass their ID or we extract from JWT
-        return ApiResponse.success("Usage started", usageRecordService.startUsage(request, null));
+        return ApiResponse.success("已登录设备", usageRecordService.startUsage(request, null));
     }
 
     @PutMapping("/{id}/end")
     public ApiResponse<UsageRecordDTO> endUsage(@PathVariable UUID id) {
-        return ApiResponse.success("Usage ended", usageRecordService.endUsage(id));
+        return ApiResponse.success("已登出设备", usageRecordService.endUsage(id));
     }
 }

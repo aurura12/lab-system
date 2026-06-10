@@ -31,13 +31,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error(401, "Invalid username or password"));
+                .body(ApiResponse.error(401, "用户名或密码错误"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error(403, "Access denied"));
+                .body(ApiResponse.error(403, "无权限访问"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,13 +48,13 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        ApiResponse<Map<String, String>> response = new ApiResponse<>(400, "Validation failed", errors);
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(400, "参数校验失败", errors);
         return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(500, "Internal server error: " + ex.getMessage()));
+                .body(ApiResponse.error(500, "服务器内部错误: " + ex.getMessage()));
     }
 }

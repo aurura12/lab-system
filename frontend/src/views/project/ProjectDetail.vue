@@ -27,8 +27,14 @@
       <el-table :data="members" stripe>
         <el-table-column prop="user.username" label="用户名" width="150" />
         <el-table-column prop="user.realName" label="姓名" width="150" />
-        <el-table-column prop="roleInProject" label="角色" width="100" />
-        <el-table-column prop="joinedAt" label="加入时间" width="180" />
+        <el-table-column label="角色" width="100">
+          <template #default="{ row }">
+            <span>{{ { lead: '负责人', member: '成员' }[row.roleInProject] || row.roleInProject }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="加入时间" width="180">
+          <template #default="{ row }">{{ row.joinedAt ? row.joinedAt.replace('T', ' ').substring(0, 19) : '-' }}</template>
+        </el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="{ row }">
             <el-button text type="danger" @click="handleRemoveMember(row.user.id)">移除</el-button>
@@ -148,10 +154,18 @@ function showAddMember() {
 
 async function handleAddMember() {
   if (!memberForm.userIds.length) return
+  let added = 0
   for (const uid of memberForm.userIds) {
-    await addProjectMember(id, { userId: uid, roleInProject: memberForm.roleInProject })
+    try {
+      await addProjectMember(id, { userId: uid, roleInProject: memberForm.roleInProject })
+      added++
+    } catch (e: any) {
+      ElMessage.warning(e?.response?.data?.message || e?.message || '添加失败')
+    }
   }
-  ElMessage.success(`已添加 ${memberForm.userIds.length} 名成员`)
+  if (added > 0) {
+    ElMessage.success(`已添加 ${added} 名成员`)
+  }
   memberDialogVisible.value = false
   loadData()
 }

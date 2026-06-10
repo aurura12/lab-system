@@ -50,7 +50,7 @@ public class DataRecordController {
             @RequestParam(required = false) String description) throws IOException {
         DataRecordDTO record = dataRecordService.uploadFile(
                 file, equipmentId, userId, projectId, usageRecordId, dataType, description);
-        return ApiResponse.success("File uploaded", record);
+        return ApiResponse.success("文件已上传", record);
     }
 
     @GetMapping("/{id}/download")
@@ -67,6 +67,6 @@ public class DataRecordController {
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteDataRecord(@PathVariable UUID id) {
         dataRecordService.deleteDataRecord(id);
-        return ApiResponse.success("Data record deleted", null);
+        return ApiResponse.success("数据记录已删除", null);
     }
 }

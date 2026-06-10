@@ -33,7 +33,7 @@ public class AuthService {
 
     public Map<String, String> refreshToken(String refreshToken) {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new RuntimeException("刷新令牌无效");
         }
 
         String username = jwtTokenProvider.getUsernameFromToken(refreshToken);

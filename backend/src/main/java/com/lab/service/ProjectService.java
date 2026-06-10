@@ -97,7 +97,7 @@ public class ProjectService {
     @Transactional
     public ProjectMember addMember(UUID projectId, UUID userId, String role) {
         if (projectMemberRepository.existsByProjectIdAndUserId(projectId, userId)) {
-            throw new BadRequestException("User is already a member of this project");
+            throw new BadRequestException("该用户已是项目成员");
         }
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
@@ -109,6 +109,10 @@ public class ProjectService {
         member.setUser(user);
         if (role != null) {
             member.setRoleInProject(ProjectMember.RoleInProject.valueOf(role));
+            // 如果角色是负责人，同时更新项目的 owner
+            if ("lead".equalsIgnoreCase(role)) {
+                projectRepository.setOwnerById(projectId, userId);
+            }
         }
         return projectMemberRepository.save(member);
     }

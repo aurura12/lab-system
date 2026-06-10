@@ -19,13 +19,13 @@ public class AuthController {
     @PostMapping("/login")
     public ApiResponse<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
         Map<String, String> tokens = authService.login(request);
-        return ApiResponse.success("Login successful", tokens);
+        return ApiResponse.success("登录成功", tokens);
     }
 
     @PostMapping("/refresh")
     public ApiResponse<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
         Map<String, String> tokens = authService.refreshToken(refreshToken);
-        return ApiResponse.success("Token refreshed", tokens);
+        return ApiResponse.success("令牌已刷新", tokens);
     }
 }

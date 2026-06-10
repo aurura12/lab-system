@@ -71,7 +71,7 @@ public class UsageRecordService {
         Optional<UsageRecord> existing = usageRecordRepository.findByEquipmentIdAndStatus(
                 request.getEquipmentId(), UsageRecord.Status.active);
         if (existing.isPresent()) {
-            throw new BadRequestException("Equipment is currently in use");
+            throw new BadRequestException("设备当前正在使用中");
         }
 
         Equipment equipment = equipmentRepository.findById(request.getEquipmentId())
@@ -105,7 +105,7 @@ public class UsageRecordService {
                 .orElseThrow(() -> new ResourceNotFoundException("UsageRecord", "id", recordId));
 
         if (record.getStatus() == UsageRecord.Status.completed) {
-            throw new BadRequestException("Usage record is already completed");
+            throw new BadRequestException("使用记录已完成");
         }
 
         record.setLogoutTime(LocalDateTime.now());

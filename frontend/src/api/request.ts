@@ -22,8 +22,8 @@ request.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.code !== 200) {
-      ElMessage.error(res.message || 'Request failed')
-      return Promise.reject(new Error(res.message))
+      ElMessage.error(res.message || '请求失败')
+      return Promise.reject(new Error(res.message || '请求失败'))
     }
     return res
   },
@@ -32,9 +32,9 @@ request.interceptors.response.use(
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       router.push('/login')
-      ElMessage.error('Session expired, please login again')
+      ElMessage.error('登录已过期，请重新登录')
     } else {
-      ElMessage.error(error.response?.data?.message || 'Network error')
+      ElMessage.error(error.response?.data?.message || '网络错误')
     }
     return Promise.reject(error)
   }

@@ -43,19 +43,19 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<UserDTO> createUser(@Valid @RequestBody UserRequest request) {
-        return ApiResponse.success("User created", userService.createUser(request));
+        return ApiResponse.success("用户已创建", userService.createUser(request));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<UserDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
-        return ApiResponse.success("User updated", userService.updateUser(id, request));
+        return ApiResponse.success("用户已更新", userService.updateUser(id, request));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
-        return ApiResponse.success("User deactivated", null);
+        return ApiResponse.success("用户已停用", null);
     }
 }

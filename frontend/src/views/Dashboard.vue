@@ -41,7 +41,7 @@
           <el-timeline-item
             v-for="item in recentActivity"
             :key="item.timestamp"
-            :timestamp="item.timestamp"
+            :timestamp="item.timestamp ? item.timestamp.replace('T', ' ').substring(0, 19) : item.timestamp"
             placement="top"
           >
             <div class="activity-item">

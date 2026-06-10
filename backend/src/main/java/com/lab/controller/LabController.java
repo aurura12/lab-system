@@ -27,20 +27,20 @@ public class LabController {
     @PostMapping("/labs")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<Lab> createLab(@RequestBody Lab lab) {
-        return ApiResponse.success("Lab created", labService.createLab(lab));
+        return ApiResponse.success("实验室已创建", labService.createLab(lab));
     }
 
     @PutMapping("/labs/{id}")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<Lab> updateLab(@PathVariable UUID id, @RequestBody Lab lab) {
-        return ApiResponse.success("Lab updated", labService.updateLab(id, lab));
+        return ApiResponse.success("实验室已更新", labService.updateLab(id, lab));
     }
 
     @DeleteMapping("/labs/{id}")
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<Void> deleteLab(@PathVariable UUID id) {
         labService.deleteLab(id);
-        return ApiResponse.success("Lab deleted", null);
+        return ApiResponse.success("实验室已删除", null);
     }
 
     @GetMapping("/labs/{labId}/floors")
@@ -51,7 +51,7 @@ public class LabController {
     @PostMapping("/labs/{labId}/floors")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<Floor> createFloor(@PathVariable UUID labId, @RequestBody Floor floor) {
-        return ApiResponse.success("Floor created", labService.createFloor(labId, floor));
+        return ApiResponse.success("楼层已创建", labService.createFloor(labId, floor));
     }
 
     @GetMapping("/floors/{floorId}/rooms")
@@ -62,7 +62,7 @@ public class LabController {
     @PostMapping("/floors/{floorId}/rooms")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<Room> createRoom(@PathVariable UUID floorId, @RequestBody Room room) {
-        return ApiResponse.success("Room created", labService.createRoom(floorId, room));
+        return ApiResponse.success("房间已创建", labService.createRoom(floorId, room));
     }
 
     @GetMapping("/rooms/{roomId}")

@@ -39,26 +39,26 @@ public class EquipmentController {
     @PostMapping
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<EquipmentDTO> createEquipment(@Valid @RequestBody EquipmentRequest request) {
-        return ApiResponse.success("Equipment created", equipmentService.createEquipment(request));
+        return ApiResponse.success("设备已创建", equipmentService.createEquipment(request));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<EquipmentDTO> updateEquipment(@PathVariable UUID id, @Valid @RequestBody EquipmentRequest request) {
-        return ApiResponse.success("Equipment updated", equipmentService.updateEquipment(id, request));
+        return ApiResponse.success("设备已更新", equipmentService.updateEquipment(id, request));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     public ApiResponse<Void> deleteEquipment(@PathVariable UUID id) {
         equipmentService.deleteEquipment(id);
-        return ApiResponse.success("Equipment deleted", null);
+        return ApiResponse.success("设备已删除", null);
     }
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('admin', 'lab_manager')")
     public ApiResponse<EquipmentDTO> updateStatus(@PathVariable UUID id, @RequestBody Map<String, String> body) {
         Equipment.Status status = Equipment.Status.valueOf(body.get("status"));
-        return ApiResponse.success("Status updated", equipmentService.updateStatus(id, status));
+        return ApiResponse.success("状态已更新", equipmentService.updateStatus(id, status));
     }
 }

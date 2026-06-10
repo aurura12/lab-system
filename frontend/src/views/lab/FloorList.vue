@@ -20,7 +20,7 @@
         <div class="floors-grid">
           <div v-for="floor in labFloors[lab.id]" :key="floor.id" class="floor-card" @click="enterFloor(floor)">
             <div class="floor-number">{{ floor.floorNumber }}F</div>
-            <div class="floor-name">{{ floor.name || `Floor ${floor.floorNumber}` }}</div>
+            <div class="floor-name">{{ floor.name || `第${floor.floorNumber}层` }}</div>
           </div>
           <div v-if="!labFloors[lab.id]?.length" class="empty-floors">
             暂无楼层，点击"添加楼层"创建
