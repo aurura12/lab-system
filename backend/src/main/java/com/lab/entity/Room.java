@@ -1,5 +1,7 @@
 package com.lab.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lab.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,11 +12,13 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "rooms", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"floor_id", "room_number"})
 })
 public class Room extends BaseEntity {
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id", nullable = false)
     private Floor floor;
