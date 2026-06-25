@@ -98,6 +98,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '位置查询' },
       },
       {
+        path: 'reagents/trace',
+        name: 'ReagentTrace',
+        component: () => import('@/views/reagents/ReagentTrace.vue'),
+        meta: { title: '试剂追溯' },
+      },
+      {
         path: 'users',
         name: 'UserManage',
         component: () => import('@/views/user/UserManage.vue'),
