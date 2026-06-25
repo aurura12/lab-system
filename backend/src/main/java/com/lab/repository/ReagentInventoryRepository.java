@@ -38,4 +38,9 @@ public interface ReagentInventoryRepository extends JpaRepository<ReagentInvento
     List<ReagentInventory> findByAlertLevelIn(@Param("levels") List<String> levels);
 
     long countByAlertLevel(String alertLevel);
+
+    @Query("SELECT i FROM ReagentInventory i WHERE i.remainingQuantity <= " +
+           "i.category.minStockThreshold AND i.category.minStockThreshold IS NOT NULL " +
+           "AND i.status NOT IN ('disposed', 'expired')")
+    List<ReagentInventory> findLowStock();
 }

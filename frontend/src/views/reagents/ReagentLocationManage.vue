@@ -29,7 +29,10 @@
         <template #default="{ node, data }">
           <div style="display: flex; align-items: center; gap: 8px; flex: 1; padding: 4px 0;">
             <span :style="{ fontWeight: data.level === 'cabinet' ? 600 : 400 }">
-              {{ levelIcon(data.level) }} {{ data.label }}
+              <el-icon v-if="data.level === 'cabinet'" style="margin-right: 4px;"><Folder /></el-icon>
+              <el-icon v-else-if="data.level === 'shelf'" style="margin-right: 4px; color: var(--color-ink-muted);"><FolderOpened /></el-icon>
+              <el-icon v-else style="margin-right: 4px; color: var(--color-ink-muted);"><HomeFilled /></el-icon>
+              {{ data.label }}
             </span>
             <span v-if="data.path" style="color: var(--color-ink-faint); font-size: 13px; margin-left: 4px;">{{ data.path }}</span>
             <div style="margin-left: auto; display: flex; gap: 4px;">
@@ -68,6 +71,7 @@
 import { ref, onMounted, reactive } from 'vue'
 import { getLocationTree, createLocation, updateLocation, deleteLocation } from '@/api/reagent'
 import { getLabs, getFloors, getRooms } from '@/api/lab'
+import { Folder, FolderOpened, HomeFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const loading = ref(false)
@@ -82,10 +86,6 @@ let currentParent: any = null
 const currentLevel = ref('cabinet')
 
 const locationForm = reactive({ code: '', name: '', sortOrder: 0 })
-
-function levelIcon(level: string) {
-  return { cabinet: '🗄️', shelf: '📦', grid: '📌' }[level] || '•'
-}
 
 function buildTree(nodes: any[]): any[] {
   return nodes.map((n: any) => ({

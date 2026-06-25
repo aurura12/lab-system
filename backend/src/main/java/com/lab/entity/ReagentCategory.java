@@ -2,13 +2,11 @@ package com.lab.entity;
 
 import com.lab.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.math.BigDecimal;
-
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "reagent_categories")
 public class ReagentCategory extends BaseEntity {
@@ -39,6 +37,18 @@ public class ReagentCategory extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String storageConditions;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReagentCategory)) return false;
+        return getId() != null && getId().equals(((ReagentCategory) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
     public enum HazardClass {
         flammable, corrosive, oxidizing, toxic, none

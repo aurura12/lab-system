@@ -2,13 +2,13 @@ package com.lab.entity;
 
 import com.lab.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "storage_locations")
 public class StorageLocation extends BaseEntity {
@@ -41,6 +41,18 @@ public class StorageLocation extends BaseEntity {
 
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StorageLocation)) return false;
+        return getId() != null && getId().equals(((StorageLocation) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
     public enum Level {
         cabinet, shelf, grid

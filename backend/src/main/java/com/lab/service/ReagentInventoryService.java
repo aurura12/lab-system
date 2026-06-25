@@ -75,15 +75,7 @@ public class ReagentInventoryService {
 
     @Transactional(readOnly = true)
     public List<ReagentInventoryDTO> getOutOfStock() {
-        return inventoryRepository.findAll().stream()
-                .filter(i -> {
-                    if (i.getCategory() == null) return false;
-                    Integer threshold = i.getCategory().getMinStockThreshold();
-                    return threshold != null
-                            && i.getRemainingQuantity().compareTo(BigDecimal.valueOf(threshold)) <= 0
-                            && !"disposed".equals(i.getStatus())
-                            && !"expired".equals(i.getStatus());
-                })
+        return inventoryRepository.findLowStock().stream()
                 .map(ReagentInventoryDTO::fromEntity)
                 .toList();
     }
@@ -293,12 +285,16 @@ public class ReagentInventoryService {
     @Transactional
     public void updateAlertLevels() {
         List<ReagentInventory> all = inventoryRepository.findAll();
+        List<ReagentInventory> toUpdate = new ArrayList<>();
         for (ReagentInventory item : all) {
             String newLevel = calculateAlertLevel(item.getExpiryDate(), item.getStatus());
             if (!newLevel.equals(item.getAlertLevel())) {
                 item.setAlertLevel(newLevel);
-                inventoryRepository.save(item);
+                toUpdate.add(item);
             }
+        }
+        if (!toUpdate.isEmpty()) {
+            inventoryRepository.saveAll(toUpdate);
         }
     }
 
@@ -315,11 +311,9 @@ public class ReagentInventoryService {
         return "normal";
     }
 
-    private static int batchCounter = 0;
-    private synchronized String generateBatchNo() {
-        batchCounter++;
+    private String generateBatchNo() {
         return "B" + LocalDate.now().toString().replace("-", "")
-                + String.format("%04d", batchCounter % 10000);
+                + "-" + UUID.randomUUID().toString().substring(0, 8);
     }
 
     private ReagentInventory findInventory(UUID id) {

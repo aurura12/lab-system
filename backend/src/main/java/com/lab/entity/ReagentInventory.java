@@ -2,15 +2,15 @@ package com.lab.entity;
 
 import com.lab.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "reagent_inventory")
 public class ReagentInventory extends BaseEntity {
@@ -61,6 +61,18 @@ public class ReagentInventory extends BaseEntity {
 
     @Column(name = "alert_level", nullable = false, length = 20)
     private String alertLevel = "normal";
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReagentInventory)) return false;
+        return getId() != null && getId().equals(((ReagentInventory) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
     public enum Status {
         unopened, opened, expired, disposed

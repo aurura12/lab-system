@@ -155,38 +155,50 @@ function alertLabel(s: string) {
 }
 
 async function loadCategories() {
-  const res: any = await getCategoryList({ page: 0, size: 200 })
-  categoryOptions.value = res.data.content || []
+  try {
+    const res: any = await getCategoryList({ page: 0, size: 200 })
+    categoryOptions.value = res.data.content || []
+  } catch {
+    // 品类列表加载失败不影响出入库操作
+  }
 }
 
 async function lookupBarcode() {
   if (!outboundBarcode.value.trim()) return
-  const res: any = await getInventoryList({ keyword: outboundBarcode.value.trim(), size: 1 })
-  const list = res.data.content || []
-  if (list.length > 0) {
-    outboundReagent.value = list[0]
-    outboundForm.quantity = list[0].remainingQuantity > 1 ? 1 : list[0].remainingQuantity
-    outboundForm.purpose = ''
-  } else {
-    ElMessage.warning('未找到该条码的试剂')
-    outboundReagent.value = null
+  try {
+    const res: any = await getInventoryList({ keyword: outboundBarcode.value.trim(), size: 1 })
+    const list = res.data.content || []
+    if (list.length > 0) {
+      outboundReagent.value = list[0]
+      outboundForm.quantity = list[0].remainingQuantity > 1 ? 1 : list[0].remainingQuantity
+      outboundForm.purpose = ''
+    } else {
+      ElMessage.warning('未找到该条码的试剂')
+      outboundReagent.value = null
+    }
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.message || '查询失败')
   }
 }
 
 async function addBatchItem() {
   const code = batchBarcodeInput.value.trim()
   if (!code) return
-  const res: any = await getInventoryList({ keyword: code, size: 1 })
-  const list = res.data.content || []
-  if (list.length > 0 && list[0].status !== 'disposed' && list[0].status !== 'expired') {
-    if (batchItems.value.some(i => i.barcode === code)) {
-      ElMessage.warning('该条码已在列表中')
+  try {
+    const res: any = await getInventoryList({ keyword: code, size: 1 })
+    const list = res.data.content || []
+    if (list.length > 0 && list[0].status !== 'disposed' && list[0].status !== 'expired') {
+      if (batchItems.value.some(i => i.barcode === code)) {
+        ElMessage.warning('该条码已在列表中')
+      } else {
+        batchItems.value.push({ ...list[0], useQuantity: list[0].remainingQuantity > 1 ? 1 : list[0].remainingQuantity })
+      }
+      batchBarcodeInput.value = ''
     } else {
-      batchItems.value.push({ ...list[0], useQuantity: list[0].remainingQuantity > 1 ? 1 : list[0].remainingQuantity })
+      ElMessage.warning('未找到有效试剂')
     }
-    batchBarcodeInput.value = ''
-  } else {
-    ElMessage.warning('未找到有效试剂')
+  } catch {
+    ElMessage.warning('查询失败，请检查条码是否正确')
   }
 }
 
@@ -200,6 +212,8 @@ async function handleInbound() {
     await inboundReagent(inboundForm)
     ElMessage.success('入库成功')
     Object.assign(inboundForm, { categoryId: '', barcode: '', totalQuantity: 1, unit: '', manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '' })
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.message || '入库失败')
   } finally {
     inboundLoading.value = false
   }
@@ -216,6 +230,8 @@ async function handleOutbound() {
     ElMessage.success('出库成功')
     outboundReagent.value = null
     outboundBarcode.value = ''
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.message || '出库失败')
   } finally {
     outboundLoading.value = false
   }
@@ -231,6 +247,8 @@ async function handleBatchUse() {
     ElMessage.success('批次出库成功')
     batchItems.value = []
     batchPurpose.value = ''
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.message || '批次出库失败')
   } finally {
     batchLoading.value = false
   }
