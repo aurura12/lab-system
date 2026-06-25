@@ -60,6 +60,43 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/data/DataRecordList.vue'),
         meta: { title: '数据记录' },
       },
+      // ─── 试剂管理 ───
+      {
+        path: 'reagents/categories',
+        name: 'ReagentCategories',
+        component: () => import('@/views/reagents/ReagentCategoryList.vue'),
+        meta: { title: '试剂品类管理' },
+      },
+      {
+        path: 'reagents/inventory',
+        name: 'ReagentInventory',
+        component: () => import('@/views/reagents/ReagentInventoryList.vue'),
+        meta: { title: '库存总览' },
+      },
+      {
+        path: 'reagents/transaction',
+        name: 'ReagentTransaction',
+        component: () => import('@/views/reagents/ReagentTransaction.vue'),
+        meta: { title: '出入库操作' },
+      },
+      {
+        path: 'reagents/expiring',
+        name: 'ReagentExpiring',
+        component: () => import('@/views/reagents/ReagentExpiring.vue'),
+        meta: { title: '临期预警' },
+      },
+      {
+        path: 'reagents/locations',
+        name: 'ReagentLocations',
+        component: () => import('@/views/reagents/ReagentLocationManage.vue'),
+        meta: { title: '位置管理' },
+      },
+      {
+        path: 'reagents/locations/search',
+        name: 'ReagentLocationSearch',
+        component: () => import('@/views/reagents/ReagentLocationSearch.vue'),
+        meta: { title: '位置查询' },
+      },
       {
         path: 'users',
         name: 'UserManage',

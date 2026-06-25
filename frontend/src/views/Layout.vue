@@ -39,6 +39,20 @@
           <el-icon><User /></el-icon>
           <template #title>用户管理</template>
         </el-menu-item>
+
+        <!-- 试剂管理 -->
+        <el-sub-menu index="/reagents">
+          <template #title>
+            <el-icon><Collection /></el-icon>
+            <span>试剂管理</span>
+          </template>
+          <el-menu-item index="/reagents/categories">品类管理</el-menu-item>
+          <el-menu-item index="/reagents/inventory">库存总览</el-menu-item>
+          <el-menu-item index="/reagents/transaction">出入库操作</el-menu-item>
+          <el-menu-item index="/reagents/expiring">临期预警</el-menu-item>
+          <el-menu-item index="/reagents/locations">位置管理</el-menu-item>
+          <el-menu-item index="/reagents/locations/search">位置查询</el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
     <el-container>
@@ -78,7 +92,7 @@ import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import {
   DataAnalysis, OfficeBuilding, Monitor, Folder, Timer, Document,
-  User, Fold, Expand, ArrowDown
+  User, Fold, Expand, ArrowDown, Collection
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
