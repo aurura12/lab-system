@@ -116,13 +116,36 @@
         <el-button type="primary" @click="handleBatchUse" :disabled="batchItems.length === 0" :loading="batchLoading">批次出库</el-button>
       </div>
     </div>
+
+    <!-- 条码打印对话框 -->
+    <el-dialog v-model="barcodeDialogVisible" title="条码打印" width="400px" :close-on-click-modal="false">
+      <div style="text-align: center;">
+        <div style="font-size: 14px; color: var(--color-ink-muted); margin-bottom: 12px;">
+          试剂：<strong>{{ lastInboundResult?.categoryName }}</strong>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <svg ref="barcodeSvgRef"></svg>
+        </div>
+        <div style="font-size: 20px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px;">
+          {{ lastInboundResult?.barcode }}
+        </div>
+        <div style="font-size: 13px; color: var(--color-ink-faint);">
+          有效期：{{ lastInboundResult?.expiryDate }} &nbsp;|&nbsp; 批次：{{ lastInboundResult?.batchNo }}
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="barcodeDialogVisible = false">关闭</el-button>
+        <el-button type="primary" @click="printBarcode">打印条码</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import { getCategoryList, getInventoryList, inboundReagent, useReagent, batchUseReagent } from '@/api/reagent'
 import { ElMessage } from 'element-plus'
+import JsBarcode from 'jsbarcode'
 
 const activeTab = ref('inbound')
 
@@ -132,6 +155,9 @@ const inboundForm = reactive({
   categoryId: '', barcode: '', totalQuantity: 1, unit: '',
   manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '',
 })
+const barcodeDialogVisible = ref(false)
+const lastInboundResult = ref<any>(null)
+const barcodeSvgRef = ref<SVGSVGElement | null>(null)
 const categoryOptions = ref<any[]>([])
 
 // 单瓶出库
@@ -209,14 +235,47 @@ async function handleInbound() {
   }
   inboundLoading.value = true
   try {
-    await inboundReagent(inboundForm)
-    ElMessage.success('入库成功')
+    const res: any = await inboundReagent(inboundForm)
+    lastInboundResult.value = res.data
     Object.assign(inboundForm, { categoryId: '', barcode: '', totalQuantity: 1, unit: '', manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '' })
+    await nextTick()
+    if (barcodeSvgRef.value && lastInboundResult.value?.barcode) {
+      JsBarcode(barcodeSvgRef.value, lastInboundResult.value.barcode, {
+        format: 'CODE128',
+        width: 2,
+        height: 60,
+        displayValue: false,
+        margin: 10,
+      })
+    }
+    barcodeDialogVisible.value = true
   } catch (e: any) {
     ElMessage.error(e?.response?.data?.message || '入库失败')
   } finally {
     inboundLoading.value = false
   }
+}
+
+function printBarcode() {
+  const svg = barcodeSvgRef.value
+  if (!svg) return
+  const win = window.open('', '_blank')
+  if (!win) return
+  win.document.write(`
+    <html><head><title>打印条码</title>
+    <style>body{text-align:center;padding:40px;font-family:sans-serif;}
+    .barcode{font-size:20px;font-weight:700;letter-spacing:2px;margin-top:10px;}
+    .info{font-size:13px;color:#666;margin-top:6px;}
+    @media print{body{padding:20px;}}</style>
+    </head><body>
+    ${svg.outerHTML}
+    <div class="barcode">${lastInboundResult.value?.barcode || ''}</div>
+    <div class="info">${lastInboundResult.value?.categoryName || ''}</div>
+    <div class="info">有效期: ${lastInboundResult.value?.expiryDate || ''}</div>
+    </body></html>
+  `)
+  win.document.close()
+  setTimeout(() => { win.print(); win.close() }, 500)
 }
 
 async function handleOutbound() {

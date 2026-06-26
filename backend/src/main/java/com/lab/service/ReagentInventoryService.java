@@ -98,12 +98,13 @@ public class ReagentInventoryService {
 
         if (request.getBarcode() != null && !request.getBarcode().isEmpty()
                 && inventoryRepository.existsByBarcode(request.getBarcode())) {
-            throw new BadRequestException("Barcode already exists: " + request.getBarcode());
+            throw new BadRequestException("条码已存在: " + request.getBarcode());
         }
 
         ReagentInventory inventory = new ReagentInventory();
         inventory.setCategory(category);
-        inventory.setBarcode(request.getBarcode());
+        inventory.setBarcode(request.getBarcode() != null && !request.getBarcode().isEmpty()
+                ? request.getBarcode() : generateBarcode());
         inventory.setBatchNo(request.getBatchNo() != null ? request.getBatchNo() : generateBatchNo());
         inventory.setTotalQuantity(request.getTotalQuantity());
         inventory.setRemainingQuantity(request.getTotalQuantity());
@@ -314,6 +315,11 @@ public class ReagentInventoryService {
     private String generateBatchNo() {
         return "B" + LocalDate.now().toString().replace("-", "")
                 + "-" + UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private String generateBarcode() {
+        return "R" + LocalDate.now().toString().replace("-", "")
+                + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
     }
 
     private ReagentInventory findInventory(UUID id) {
