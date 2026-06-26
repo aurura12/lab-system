@@ -100,3 +100,8 @@ export function deleteLocation(id: string) {
 export function searchReagentLocation(keyword: string) {
   return request.get('/reagent-locations/search', { params: { keyword } })
 }
+
+// ─── 报表 ───
+export function getReagentReport(params?: any) {
+  return request.get('/reagent-reports/usage', { params })
+}

@@ -104,6 +104,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '试剂追溯' },
       },
       {
+        path: 'reagents/report',
+        name: 'ReagentReport',
+        component: () => import('@/views/reagents/ReagentReport.vue'),
+        meta: { title: '使用报表' },
+      },
+      {
         path: 'users',
         name: 'UserManage',
         component: () => import('@/views/user/UserManage.vue'),
