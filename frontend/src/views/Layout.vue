@@ -52,6 +52,7 @@
           <el-menu-item index="/reagents/expiring">临期预警</el-menu-item>
           <el-menu-item index="/reagents/locations">位置管理</el-menu-item>
           <el-menu-item index="/reagents/locations/search">位置查询</el-menu-item>
+          <el-menu-item index="/reagents/locations/map">位置导航</el-menu-item>
           <el-menu-item index="/reagents/trace">试剂追溯</el-menu-item>
           <el-menu-item index="/reagents/report">使用报表</el-menu-item>
           <el-menu-item index="/reagents/incompatibility">禁忌检查</el-menu-item>

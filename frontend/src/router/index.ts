@@ -122,6 +122,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '禁忌检查' },
       },
       {
+        path: 'reagents/locations/map',
+        name: 'ReagentLocationMap',
+        component: () => import('@/views/reagents/ReagentLocationMap.vue'),
+        meta: { title: '位置导航' },
+      },
+      {
         path: 'users',
         name: 'UserManage',
         component: () => import('@/views/user/UserManage.vue'),
