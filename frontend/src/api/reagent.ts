@@ -105,3 +105,28 @@ export function searchReagentLocation(keyword: string) {
 export function getReagentReport(params?: any) {
   return request.get('/reagent-reports/usage', { params })
 }
+
+// ─── 禁忌规则 ───
+export function getIncompatibilityRules(params?: any) {
+  return request.get('/incompatibility-rules', { params })
+}
+
+export function getIncompatibilityRuleById(id: string) {
+  return request.get(`/incompatibility-rules/${id}`)
+}
+
+export function createIncompatibilityRule(data: any) {
+  return request.post('/incompatibility-rules', data)
+}
+
+export function updateIncompatibilityRule(id: string, data: any) {
+  return request.put(`/incompatibility-rules/${id}`, data)
+}
+
+export function deleteIncompatibilityRule(id: string) {
+  return request.delete(`/incompatibility-rules/${id}`)
+}
+
+export function checkIncompatibility(data: any) {
+  return request.post('/incompatibility-rules/check', data)
+}

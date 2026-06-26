@@ -110,6 +110,18 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '使用报表' },
       },
       {
+        path: 'reagents/incompatibility/rules',
+        name: 'IncompatibilityRules',
+        component: () => import('@/views/reagents/IncompatibilityRules.vue'),
+        meta: { title: '禁忌规则' },
+      },
+      {
+        path: 'reagents/incompatibility',
+        name: 'IncompatibilityCheck',
+        component: () => import('@/views/reagents/IncompatibilityCheck.vue'),
+        meta: { title: '禁忌检查' },
+      },
+      {
         path: 'users',
         name: 'UserManage',
         component: () => import('@/views/user/UserManage.vue'),

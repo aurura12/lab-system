@@ -54,6 +54,8 @@
           <el-menu-item index="/reagents/locations/search">位置查询</el-menu-item>
           <el-menu-item index="/reagents/trace">试剂追溯</el-menu-item>
           <el-menu-item index="/reagents/report">使用报表</el-menu-item>
+          <el-menu-item index="/reagents/incompatibility">禁忌检查</el-menu-item>
+          <el-menu-item index="/reagents/incompatibility/rules">禁忌规则</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
