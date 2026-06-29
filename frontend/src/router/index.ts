@@ -127,6 +127,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/reagents/ReagentLocationMap.vue'),
         meta: { title: '位置导航' },
       },
+      // ─── 设备预约 ───
+      {
+        path: 'equipment/bookings',
+        name: 'BookingList',
+        component: () => import('@/views/equipment/BookingList.vue'),
+        meta: { title: '设备预约' },
+      },
+      {
+        path: 'equipment/bookings/new',
+        name: 'BookingCreate',
+        component: () => import('@/views/equipment/BookingCreate.vue'),
+        meta: { title: '新建预约' },
+      },
       {
         path: 'users',
         name: 'UserManage',

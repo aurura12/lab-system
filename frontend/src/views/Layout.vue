@@ -19,10 +19,14 @@
           <el-icon><OfficeBuilding /></el-icon>
           <template #title>实验室管理</template>
         </el-menu-item>
-        <el-menu-item index="/equipment">
-          <el-icon><Monitor /></el-icon>
-          <template #title>设备管理</template>
-        </el-menu-item>
+        <el-sub-menu index="/equipment">
+          <template #title>
+            <el-icon><Monitor /></el-icon>
+            <span>设备管理</span>
+          </template>
+          <el-menu-item index="/equipment">设备列表</el-menu-item>
+          <el-menu-item index="/equipment/bookings">设备预约</el-menu-item>
+        </el-sub-menu>
         <el-menu-item index="/projects">
           <el-icon><Folder /></el-icon>
           <template #title>项目管理</template>
