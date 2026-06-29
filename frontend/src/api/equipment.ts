@@ -60,3 +60,41 @@ export function approveBooking(id: string, data: any) {
 export function getPendingApprovals(params?: any) {
   return request.get('/equipment-bookings/pending-approvals', { params })
 }
+
+// ─── 维保工单 ───
+export function getMaintenanceOrders(params?: any) {
+  return request.get('/maintenance-orders', { params })
+}
+
+export function getUpcomingMaintenance() {
+  return request.get('/maintenance-orders/upcoming')
+}
+
+export function createMaintenanceOrder(data: any) {
+  return request.post('/maintenance-orders', data)
+}
+
+export function updateMaintenanceOrder(id: string, data: any) {
+  return request.put(`/maintenance-orders/${id}`, data)
+}
+
+export function completeMaintenanceOrder(id: string, data: any) {
+  return request.put(`/maintenance-orders/${id}/complete`, data)
+}
+
+export function deleteMaintenanceOrder(id: string) {
+  return request.delete(`/maintenance-orders/${id}`)
+}
+
+// ─── 设备日志 ───
+export function getEquipmentLogs(params?: any) {
+  return request.get('/equipment-logs', { params })
+}
+
+export function getRecentAnomalies(params?: any) {
+  return request.get('/equipment-logs/anomalies', { params })
+}
+
+export function createEquipmentLog(data: any) {
+  return request.post('/equipment-logs', data)
+}

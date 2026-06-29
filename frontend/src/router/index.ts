@@ -141,6 +141,18 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '新建预约' },
       },
       {
+        path: 'equipment/maintenance',
+        name: 'MaintenanceOrders',
+        component: () => import('@/views/equipment/MaintenanceOrderList.vue'),
+        meta: { title: '维保工单' },
+      },
+      {
+        path: 'equipment/logs',
+        name: 'EquipmentLogs',
+        component: () => import('@/views/equipment/EquipmentLogList.vue'),
+        meta: { title: '设备日志' },
+      },
+      {
         path: 'users',
         name: 'UserManage',
         component: () => import('@/views/user/UserManage.vue'),

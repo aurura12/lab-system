@@ -26,6 +26,8 @@
           </template>
           <el-menu-item index="/equipment">设备列表</el-menu-item>
           <el-menu-item index="/equipment/bookings">设备预约</el-menu-item>
+          <el-menu-item index="/equipment/maintenance">维保工单</el-menu-item>
+          <el-menu-item index="/equipment/logs">设备日志</el-menu-item>
         </el-sub-menu>
         <el-menu-item index="/projects">
           <el-icon><Folder /></el-icon>
