@@ -5,19 +5,54 @@
     </div>
 
     <div class="search-bar">
-      <el-select v-model="selectedRoomId" placeholder="选择房间" style="width: 200px;" @change="loadCabinets">
-        <el-option v-for="r in rooms" :key="r.id" :label="r.name + ' (' + r.roomNumber + ')'" :value="r.id" />
-      </el-select>
       <el-input
         v-model="searchKeyword"
-        placeholder="输入试剂名或条码，定位位置..."
+        placeholder="输入试剂名称、CAS 号或条码搜索..."
         clearable
         style="width: 300px;"
         @input="handleSearch"
-        @clear="clearHighlight"
+        @keyup.enter="handleSearch"
+        @clear="clearSearch"
       >
         <template #prefix><el-icon><Search /></el-icon></template>
+        <template #append>
+          <el-button @click="handleSearch">搜索</el-button>
+        </template>
       </el-input>
+      <el-select v-model="selectedRoomId" placeholder="选择房间" style="width: 200px;" @change="loadCabinets">
+        <el-option v-for="r in rooms" :key="r.id" :label="r.name + ' (' + r.roomNumber + ')'" :value="r.id" />
+      </el-select>
+    </div>
+
+    <!-- 搜索结果表格 -->
+    <div v-if="searchResults.length > 0" class="feature-card" style="margin-bottom: 16px;">
+      <div style="font-size: 14px; color: var(--color-ink-muted); margin-bottom: 12px;">
+        共找到 {{ searchResults.length }} 条结果
+      </div>
+      <el-table :data="searchResults" stripe size="small">
+        <el-table-column prop="categoryName" label="名称" min-width="160" />
+        <el-table-column prop="barcode" label="条码" width="110" />
+        <el-table-column prop="remainingQuantity" label="余量" width="90">
+          <template #default="{ row }">
+            {{ row.remainingQuantity }} {{ row.unit }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="expiryDate" label="有效期" width="110" />
+        <el-table-column prop="alertLevel" label="预警" width="80">
+          <template #default="{ row }">
+            <el-tag :type="alertType(row.alertLevel)" size="small">{{ alertLabel(row.alertLevel) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="位置" min-width="220">
+          <template #default="{ row }">
+            <div v-if="row.locationPath" style="display: flex; align-items: center; gap: 6px;">
+              <el-icon style="color: var(--color-primary);"><Location /></el-icon>
+              <span style="font-weight: 500;">{{ row.locationPath }}</span>
+            </div>
+            <span v-else style="color: var(--color-ink-faint);">未指定位置</span>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
 
     <div v-if="!selectedRoomId" class="empty-state">请先选择一个房间</div>
@@ -96,7 +131,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { getLocationTree, getInventoryList } from '@/api/reagent'
+import { getLocationTree, getInventoryList, searchReagentLocation } from '@/api/reagent'
 import { getLabs, getFloors, getRooms } from '@/api/lab'
 import { Search, Location, Folder, FolderOpened, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
@@ -107,6 +142,7 @@ const currentRoomName = ref('')
 const cabinets = ref<any[]>([])
 const loading = ref(false)
 const searchKeyword = ref('')
+const searchResults = ref<any[]>([])
 const highlightedCabinetId = ref('')
 const highlightedId = ref('')
 const highlightInfo = ref<any>(null)
@@ -207,9 +243,17 @@ const sortedCabinets = computed(() => {
 
 async function handleSearch() {
   const kw = searchKeyword.value.trim()
-  if (!kw) { clearHighlight(); return }
+  if (!kw) { clearSearch(); return }
 
-  // Find the reagent location
+  // Load search results table
+  try {
+    const res: any = await searchReagentLocation(kw)
+    searchResults.value = res.data || []
+  } catch {
+    searchResults.value = []
+  }
+
+  // Also highlight the cabinet on the map
   try {
     const res: any = await getInventoryList({ keyword: kw, size: 1 })
     const items = res.data?.content || []
@@ -217,7 +261,6 @@ async function handleSearch() {
 
     const item = items[0]
     if (item.locationPath) {
-      // Find which cabinet this belongs to
       const pathParts = item.locationPath.split('/')
       const cabinetCode = pathParts.length > 1 ? pathParts[1] : ''
       highlightedCabinetId.value = ''
@@ -232,13 +275,11 @@ async function handleSearch() {
         reagentName: item.categoryName,
         location: item.locationPath,
       }
-      // Auto expand
       if (highlightedCabinetId.value) {
         expandedCabinetId.value = highlightedCabinetId.value
         scrollToCabinet()
       }
     } else {
-      ElMessage.info('该试剂未指定存放位置')
       clearHighlight()
     }
   } catch {
@@ -250,6 +291,11 @@ function clearHighlight() {
   highlightedCabinetId.value = ''
   highlightedId.value = ''
   highlightInfo.value = null
+}
+
+function clearSearch() {
+  searchResults.value = []
+  clearHighlight()
 }
 
 function scrollToCabinet() {

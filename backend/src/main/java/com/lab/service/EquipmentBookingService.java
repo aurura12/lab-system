@@ -66,6 +66,12 @@ public class EquipmentBookingService {
             throw new BadRequestException("预约时间不能在过去");
         }
 
+        // 爽约累计惩罚：近 30 天内爽约 3 次及以上，禁止预约
+        long noShowCount = bookingRepository.countNoShowsSince(userId, LocalDateTime.now().minusDays(30));
+        if (noShowCount >= 3) {
+            throw new BadRequestException("您近 30 天内爽约 " + noShowCount + " 次，暂时无法预约，请联系管理员");
+        }
+
         // 检查冲突
         List<EquipmentBooking> conflicts = bookingRepository.findConflicting(equipmentId, start, end);
         if (!conflicts.isEmpty()) {

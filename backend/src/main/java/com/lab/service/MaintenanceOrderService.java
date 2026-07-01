@@ -87,6 +87,15 @@ public class MaintenanceOrderService {
         order.setStatus("completed");
         order.setCompletedDate(LocalDate.now());
         if (resolution != null) order.setResolution(resolution);
+
+        // 更新设备的维护日期
+        if (order.getEquipment() != null) {
+            var equipment = order.getEquipment();
+            equipment.setLastMaintenance(LocalDate.now());
+            equipment.setNextMaintenance(LocalDate.now().plusDays(90));
+            equipmentRepository.save(equipment);
+        }
+
         return toDTO(orderRepository.save(order));
     }
 

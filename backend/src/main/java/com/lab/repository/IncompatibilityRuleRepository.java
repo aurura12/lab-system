@@ -29,6 +29,12 @@ public interface IncompatibilityRuleRepository extends JpaRepository<Incompatibi
     List<IncompatibilityRule> findWithinSet(@Param("ids") List<UUID> ids);
 
     @Query("SELECT r FROM IncompatibilityRule r WHERE " +
+           "(r.categoryAId = :targetId AND r.categoryBId IN :existingIds) OR " +
+           "(r.categoryBId = :targetId AND r.categoryAId IN :existingIds)")
+    List<IncompatibilityRule> findBetweenTargetAndSet(
+            @Param("targetId") UUID targetId, @Param("existingIds") List<UUID> existingIds);
+
+    @Query("SELECT r FROM IncompatibilityRule r WHERE " +
            "r.scenario = :scenario OR r.scenario = 'all'")
     List<IncompatibilityRule> findByScenario(@Param("scenario") String scenario);
 }

@@ -23,6 +23,11 @@ public class StorageLocationController {
         return ApiResponse.success(locationService.getTreeByRoomId(roomId));
     }
 
+    @GetMapping("/all")
+    public ApiResponse<List<StorageLocationDTO>> getAll() {
+        return ApiResponse.success(locationService.getAll());
+    }
+
     @GetMapping("/{id}")
     public ApiResponse<StorageLocationDTO> getById(@PathVariable UUID id) {
         return ApiResponse.success(locationService.getById(id));

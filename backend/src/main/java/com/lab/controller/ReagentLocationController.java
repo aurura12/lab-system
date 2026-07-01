@@ -18,7 +18,7 @@ public class ReagentLocationController {
     @GetMapping("/search")
     public ApiResponse<List<ReagentInventoryDTO>> search(@RequestParam String keyword) {
         // Use inventory search which already does fuzzy matching on name, barcode, batchNo
-        var page = inventoryService.getInventory(keyword, null, null, null, 0, 50);
+        var page = inventoryService.getInventory(keyword, null, null, null, null, 0, 50);
         return ApiResponse.success(page.getContent());
     }
 }

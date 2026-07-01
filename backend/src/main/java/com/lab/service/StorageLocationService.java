@@ -37,6 +37,13 @@ public class StorageLocationService {
     }
 
     @Transactional(readOnly = true)
+    public List<StorageLocationDTO> getAll() {
+        return locationRepository.findAllByOrderByPathAsc().stream()
+                .map(StorageLocationDTO::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public StorageLocationDTO getById(UUID id) {
         return StorageLocationDTO.fromEntity(findLocation(id));
     }

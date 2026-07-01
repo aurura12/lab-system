@@ -4,10 +4,12 @@ import com.lab.dto.request.BatchUseRequest;
 import com.lab.dto.request.ReagentInventoryRequest;
 import com.lab.dto.request.ReagentUseRequest;
 import com.lab.dto.response.ApiResponse;
+import com.lab.dto.response.IncompatibilityCheckResult;
 import com.lab.dto.response.PageResponse;
 import com.lab.dto.response.ReagentInventoryDTO;
 import com.lab.entity.User;
 import com.lab.repository.UserRepository;
+import com.lab.service.IncompatibilityRuleService;
 import com.lab.service.ReagentInventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +26,20 @@ import java.util.UUID;
 public class ReagentInventoryController {
 
     private final ReagentInventoryService inventoryService;
+    private final IncompatibilityRuleService incompatibilityService;
     private final UserRepository userRepository;
 
     @GetMapping
     public ApiResponse<PageResponse<ReagentInventoryDTO>> getInventory(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String alertLevel,
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) UUID locationId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         return ApiResponse.success(
-                inventoryService.getInventory(keyword, status, categoryId, locationId, page, size));
+                inventoryService.getInventory(keyword, status, alertLevel, categoryId, locationId, page, size));
     }
 
     @GetMapping("/{id}")
@@ -93,6 +97,12 @@ public class ReagentInventoryController {
     public ApiResponse<Void> delete(@PathVariable UUID id) {
         inventoryService.delete(id);
         return ApiResponse.success("库存已删除", null);
+    }
+
+    @PostMapping("/check-location")
+    public ApiResponse<IncompatibilityCheckResult> checkLocation(
+            @RequestParam UUID locationId, @RequestParam UUID categoryId) {
+        return ApiResponse.success(incompatibilityService.checkLocation(locationId, categoryId, "storage"));
     }
 
     @PostMapping("/update-alert-levels")

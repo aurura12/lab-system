@@ -47,4 +47,8 @@ public interface EquipmentBookingRepository extends JpaRepository<EquipmentBooki
     @Query("SELECT b FROM EquipmentBooking b WHERE b.status = 'pending' " +
            "ORDER BY b.startTime ASC")
     List<EquipmentBooking> findPendingApprovals(Pageable pageable);
+
+    @Query("SELECT COUNT(b) FROM EquipmentBooking b WHERE b.userId = :userId " +
+           "AND b.status = 'no_show' AND b.startTime > :since")
+    long countNoShowsSince(@Param("userId") UUID userId, @Param("since") LocalDateTime since);
 }

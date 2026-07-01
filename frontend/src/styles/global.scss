@@ -492,8 +492,13 @@ body {
   color: var(--color-ink) !important;
 }
 
+.el-sub-menu__title:hover {
+  background: var(--color-canvas-soft) !important;
+  color: var(--color-ink) !important;
+}
+
 .el-menu-item.is-active {
-  background: #e6f2ff !important;
+  background: var(--color-canvas-soft) !important;
   color: var(--color-primary) !important;
   font-weight: 600 !important;
 }

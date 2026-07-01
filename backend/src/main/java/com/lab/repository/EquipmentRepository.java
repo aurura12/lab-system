@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,4 +28,9 @@ public interface EquipmentRepository extends JpaRepository<Equipment, UUID> {
     Page<Equipment> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     long countByStatus(Equipment.Status status);
+
+    @Query("SELECT e FROM Equipment e WHERE e.nextMaintenance IS NOT NULL " +
+           "AND e.nextMaintenance <= :deadline " +
+           "AND e.status <> 'retired'")
+    List<Equipment> findByNextMaintenanceBefore(@Param("deadline") LocalDate deadline);
 }

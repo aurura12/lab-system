@@ -8,6 +8,7 @@ import com.lab.exception.BadRequestException;
 import com.lab.exception.ResourceNotFoundException;
 import com.lab.repository.IncompatibilityRuleRepository;
 import com.lab.repository.ReagentCategoryRepository;
+import com.lab.repository.ReagentInventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ public class IncompatibilityRuleService {
 
     private final IncompatibilityRuleRepository ruleRepository;
     private final ReagentCategoryRepository categoryRepository;
+    private final ReagentInventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
     public Page<IncompatibilityRuleDTO> getRules(String scenario, int page, int size) {
@@ -143,9 +145,28 @@ public class IncompatibilityRuleService {
     }
 
     @Transactional(readOnly = true)
-    public IncompatibilityCheckResult checkLocation(UUID locationId, UUID newCategoryId) {
+    public IncompatibilityCheckResult checkLocation(UUID locationId, UUID newCategoryId, String scenario) {
         IncompatibilityCheckResult result = new IncompatibilityCheckResult();
-        result.setHasConflict(false);
+        result.setDirectConflicts(new ArrayList<>());
+        result.setIndirectConflicts(new ArrayList<>());
+
+        // 查询该位置下所有活跃库存的品类 ID
+        List<UUID> existingCategoryIds = inventoryRepository.findActiveCategoryIdsByLocationId(locationId);
+        if (existingCategoryIds.isEmpty()) {
+            result.setHasConflict(false);
+            return result;
+        }
+
+        // 查询新品类与现有品类之间的禁忌规则
+        String targetScenario = scenario != null ? scenario : "storage";
+        List<IncompatibilityRule> rules = ruleRepository.findBetweenTargetAndSet(newCategoryId, existingCategoryIds);
+
+        for (IncompatibilityRule r : rules) {
+            if (!matchesScenario(r.getScenario(), targetScenario)) continue;
+            result.getDirectConflicts().add(buildConflictItem(r, "direct"));
+        }
+
+        result.setHasConflict(!result.getDirectConflicts().isEmpty());
         return result;
     }
 

@@ -52,17 +52,24 @@
             <el-icon><Collection /></el-icon>
             <span>试剂管理</span>
           </template>
-          <el-menu-item index="/reagents/categories">品类管理</el-menu-item>
-          <el-menu-item index="/reagents/inventory">库存总览</el-menu-item>
-          <el-menu-item index="/reagents/transaction">出入库操作</el-menu-item>
-          <el-menu-item index="/reagents/expiring">临期预警</el-menu-item>
-          <el-menu-item index="/reagents/locations">位置管理</el-menu-item>
-          <el-menu-item index="/reagents/locations/search">位置查询</el-menu-item>
-          <el-menu-item index="/reagents/locations/map">位置导航</el-menu-item>
-          <el-menu-item index="/reagents/trace">试剂追溯</el-menu-item>
-          <el-menu-item index="/reagents/report">使用报表</el-menu-item>
-          <el-menu-item index="/reagents/incompatibility">禁忌检查</el-menu-item>
-          <el-menu-item index="/reagents/incompatibility/rules">禁忌规则</el-menu-item>
+          <el-sub-menu index="/reagents-inventory" popper-class="sidebar-sub-menu">
+            <template #title>库存管理</template>
+            <el-menu-item index="/reagents/categories">品类管理</el-menu-item>
+            <el-menu-item index="/reagents/inventory">库存总览</el-menu-item>
+            <el-menu-item index="/reagents/transaction">出入库操作</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="/reagents-location" popper-class="sidebar-sub-menu">
+            <template #title>位置与追溯</template>
+            <el-menu-item index="/reagents/locations">位置管理</el-menu-item>
+            <el-menu-item index="/reagents/locations/map">位置导航</el-menu-item>
+            <el-menu-item index="/reagents/trace">试剂追溯</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="/reagents-compliance" popper-class="sidebar-sub-menu">
+            <template #title>合规与报表</template>
+            <el-menu-item index="/reagents/report">使用报表</el-menu-item>
+            <el-menu-item index="/reagents/incompatibility">禁忌检查</el-menu-item>
+            <el-menu-item index="/reagents/incompatibility/rules">禁忌规则</el-menu-item>
+          </el-sub-menu>
         </el-sub-menu>
       </el-menu>
     </el-aside>
@@ -175,6 +182,28 @@ function handleCommand(command: string) {
     .el-menu-item {
       margin: 2px 10px;
       font-size: 15px;
+    }
+
+    // 嵌套子菜单（试剂管理下的分组）
+    .el-sub-menu {
+      .el-sub-menu {
+        .el-sub-menu__title {
+          font-size: 13px !important;
+          font-weight: 600 !important;
+          color: var(--color-ink-faint) !important;
+          letter-spacing: 0.5px !important;
+          padding-left: 52px !important;
+          height: 36px !important;
+          line-height: 36px !important;
+        }
+
+        .el-menu-item {
+          padding-left: 68px !important;
+          font-size: 14px !important;
+          height: 38px !important;
+          line-height: 38px !important;
+        }
+      }
     }
   }
 }

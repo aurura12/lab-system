@@ -24,6 +24,7 @@ public class ReagentInventoryDTO {
     private LocalDate manufactureDate;
     private LocalDate expiryDate;
     private LocalDate receivedDate;
+    private LocalDate openDate;
     private String supplier;
     private String status;
     private String storageConditions;
@@ -50,6 +51,7 @@ public class ReagentInventoryDTO {
         dto.setManufactureDate(inventory.getManufactureDate());
         dto.setExpiryDate(inventory.getExpiryDate());
         dto.setReceivedDate(inventory.getReceivedDate());
+        dto.setOpenDate(inventory.getOpenDate());
         dto.setSupplier(inventory.getSupplier());
         dto.setStatus(inventory.getStatus());
         dto.setStorageConditions(inventory.getStorageConditions());

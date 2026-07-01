@@ -29,6 +29,9 @@ public class ReagentInventory extends BaseEntity {
     @JoinColumn(name = "location_id")
     private StorageLocation location;
 
+    @Column(name = "location_id", insertable = false, updatable = false)
+    private UUID locationId;
+
     @Column(name = "batch_no", length = 100)
     private String batchNo;
 
@@ -49,6 +52,9 @@ public class ReagentInventory extends BaseEntity {
 
     @Column(name = "received_date", nullable = false)
     private LocalDate receivedDate;
+
+    @Column(name = "open_date")
+    private LocalDate openDate;
 
     @Column(length = 150)
     private String supplier;

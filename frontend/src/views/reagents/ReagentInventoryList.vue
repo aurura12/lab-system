@@ -7,6 +7,32 @@
       </div>
     </div>
 
+    <div class="stat-cards" v-if="stats">
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--color-success);">{{ stats.normal }}</div>
+        <div class="stat-label">正常</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--color-warning);">{{ stats.warning_days }}</div>
+        <div class="stat-label">临期提醒（≤90 天）</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--color-danger);">{{ stats.warning_urgent }}</div>
+        <div class="stat-label">临期警告（≤30 天）</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: #9b59b6;">{{ stats.expired }}</div>
+        <div class="stat-label">已过期</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <el-button size="small" :type="filters.alertLevel === '' ? 'primary' : 'default'" @click="filters.alertLevel = ''; loadData()">全部</el-button>
+      <el-button size="small" :type="filters.alertLevel === 'warning_days' ? 'warning' : 'default'" @click="filters.alertLevel = 'warning_days'; loadData()">临期提醒</el-button>
+      <el-button size="small" :type="filters.alertLevel === 'warning_urgent' ? 'danger' : 'default'" @click="filters.alertLevel = 'warning_urgent'; loadData()">临期警告</el-button>
+      <el-button size="small" :type="filters.alertLevel === 'expired' ? 'danger' : 'default'" @click="filters.alertLevel = 'expired'; loadData()">已过期</el-button>
+    </div>
+
     <div class="search-bar">
       <el-input v-model="filters.keyword" placeholder="搜索试剂名称、条码或批次号..." clearable style="width: 300px" @clear="loadData" @keyup.enter="loadData" />
       <el-select v-model="filters.status" placeholder="状态" clearable style="width: 130px" @change="loadData">
@@ -96,7 +122,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { getInventoryList, useReagent, updateInventory } from '@/api/reagent'
+import { getInventoryList, getExpiringList, useReagent, updateInventory } from '@/api/reagent'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const loading = ref(false)
@@ -104,9 +130,23 @@ const tableData = ref<any[]>([])
 const useDialogVisible = ref(false)
 const currentReagent = ref<any>(null)
 
-const filters = reactive({ keyword: '', status: '' })
+const filters = reactive({ keyword: '', status: '', alertLevel: '' })
 const pagination = reactive({ page: 0, size: 10, total: 0 })
 const useForm = reactive({ quantity: 1, purpose: '' })
+
+const stats = ref<{ normal: number; warning_days: number; warning_urgent: number; expired: number } | null>(null)
+
+async function loadStats() {
+  try {
+    const res: any = await getExpiringList()
+    const counts = { normal: 0, warning_days: 0, warning_urgent: 0, expired: 0 }
+    for (const r of (res.data || [])) {
+      const key = r.alertLevel as keyof typeof counts
+      if (counts[key] !== undefined) counts[key]++
+    }
+    stats.value = counts
+  } catch { /* ignore */ }
+}
 
 function alertType(s: string) {
   return { normal: 'success', warning_days: 'warning', warning_urgent: 'danger', expired: 'danger' }[s] || 'info'
@@ -130,6 +170,7 @@ async function loadData() {
     const res: any = await getInventoryList({
       keyword: filters.keyword || undefined,
       status: filters.status || undefined,
+      alertLevel: filters.alertLevel || undefined,
       page: pagination.page,
       size: pagination.size,
     })
@@ -165,5 +206,5 @@ async function handleMarkExpired(row: any) {
   loadData()
 }
 
-onMounted(loadData)
+onMounted(() => { loadData(); loadStats() })
 </script>

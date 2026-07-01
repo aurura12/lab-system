@@ -42,6 +42,11 @@
         <el-form-item label="储存条件">
           <el-input v-model="inboundForm.storageConditions" type="textarea" :rows="2" />
         </el-form-item>
+        <el-form-item label="存放位置">
+          <el-select v-model="inboundForm.locationId" placeholder="选择存放位置（可选）" clearable filterable style="width: 100%" @change="onLocationChange">
+            <el-option v-for="loc in allLocations" :key="loc.id" :label="loc.path || loc.code" :value="loc.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleInbound" :loading="inboundLoading">确认入库</el-button>
         </el-form-item>
@@ -143,8 +148,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import { getCategoryList, getInventoryList, inboundReagent, useReagent, batchUseReagent } from '@/api/reagent'
-import { ElMessage } from 'element-plus'
+import { getCategoryList, getInventoryList, inboundReagent, useReagent, batchUseReagent, checkLocationIncompatibility, getAllLocations } from '@/api/reagent'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import JsBarcode from 'jsbarcode'
 
 const activeTab = ref('inbound')
@@ -154,7 +159,9 @@ const inboundLoading = ref(false)
 const inboundForm = reactive({
   categoryId: '', barcode: '', totalQuantity: 1, unit: '',
   manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '',
+  locationId: '',
 })
+const allLocations = ref<any[]>([])
 const barcodeDialogVisible = ref(false)
 const lastInboundResult = ref<any>(null)
 const barcodeSvgRef = ref<SVGSVGElement | null>(null)
@@ -228,6 +235,34 @@ async function addBatchItem() {
   }
 }
 
+async function onLocationChange(val: string) {
+  if (!val || !inboundForm.categoryId) return
+  try {
+    const res: any = await checkLocationIncompatibility(val, inboundForm.categoryId)
+    if (res.data?.hasConflict) {
+      const conflicts = res.data.directConflicts || []
+      const msg = conflicts.map((c: any) =>
+        `<b>${c.categoryAName}</b> 与 <b>${c.categoryBName}</b>：${c.description}<br/>建议：${c.actionRequired || '请确认安全性'}`
+      ).join('<br/><br/>')
+      await ElMessageBox.confirm(
+        `<div style="line-height:1.6;">检测到配伍禁忌冲突：<br/><br/>${msg}</div>`,
+        '入库位置禁忌预警',
+        { confirmButtonText: '仍然入库', cancelButtonText: '换个位置', type: 'warning', dangerouslyUseHTMLString: true }
+      )
+    }
+  } catch {
+    // 用户选择换个位置，清空选择
+    inboundForm.locationId = ''
+  }
+}
+
+async function loadLocations() {
+  try {
+    const res: any = await getAllLocations()
+    allLocations.value = res.data || []
+  } catch { /* ignore */ }
+}
+
 async function handleInbound() {
   if (!inboundForm.categoryId || !inboundForm.expiryDate) {
     ElMessage.warning('请填写品类和有效期')
@@ -237,7 +272,7 @@ async function handleInbound() {
   try {
     const res: any = await inboundReagent(inboundForm)
     lastInboundResult.value = res.data
-    Object.assign(inboundForm, { categoryId: '', barcode: '', totalQuantity: 1, unit: '', manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '' })
+    Object.assign(inboundForm, { categoryId: '', barcode: '', totalQuantity: 1, unit: '', manufactureDate: '', expiryDate: '', supplier: '', storageConditions: '', locationId: '' })
     await nextTick()
     if (barcodeSvgRef.value && lastInboundResult.value?.barcode) {
       JsBarcode(barcodeSvgRef.value, lastInboundResult.value.barcode, {
@@ -313,5 +348,5 @@ async function handleBatchUse() {
   }
 }
 
-onMounted(loadCategories)
+onMounted(() => { loadCategories(); loadLocations() })
 </script>

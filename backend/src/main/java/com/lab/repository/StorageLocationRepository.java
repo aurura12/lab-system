@@ -15,4 +15,6 @@ public interface StorageLocationRepository extends JpaRepository<StorageLocation
     List<StorageLocation> findByParentIdIsNullAndRoomIdOrderBySortOrderAsc(UUID roomId);
 
     List<StorageLocation> findByLevelAndRoomId(String level, UUID roomId);
+
+    List<StorageLocation> findAllByOrderByPathAsc();
 }

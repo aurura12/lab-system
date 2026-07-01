@@ -34,4 +34,6 @@ public interface MaintenanceOrderRepository extends JpaRepository<MaintenanceOrd
     List<MaintenanceOrder> findUpcoming(
             @Param("today") LocalDate today,
             @Param("deadline") LocalDate deadline);
+
+    boolean existsByEquipmentIdAndStatusIn(UUID equipmentId, List<String> statuses);
 }

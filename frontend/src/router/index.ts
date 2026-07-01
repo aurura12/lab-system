@@ -80,22 +80,10 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '出入库操作' },
       },
       {
-        path: 'reagents/expiring',
-        name: 'ReagentExpiring',
-        component: () => import('@/views/reagents/ReagentExpiring.vue'),
-        meta: { title: '临期预警' },
-      },
-      {
         path: 'reagents/locations',
         name: 'ReagentLocations',
         component: () => import('@/views/reagents/ReagentLocationManage.vue'),
         meta: { title: '位置管理' },
-      },
-      {
-        path: 'reagents/locations/search',
-        name: 'ReagentLocationSearch',
-        component: () => import('@/views/reagents/ReagentLocationSearch.vue'),
-        meta: { title: '位置查询' },
       },
       {
         path: 'reagents/trace',

@@ -37,8 +37,8 @@ public class ReagentInventoryService {
 
     @Transactional(readOnly = true)
     public PageResponse<ReagentInventoryDTO> getInventory(String keyword, String status,
-                                                           UUID categoryId, UUID locationId,
-                                                           int page, int size) {
+                                                           String alertLevel, UUID categoryId,
+                                                           UUID locationId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("expiryDate").ascending());
         Page<ReagentInventory> inventoryPage;
 
@@ -46,6 +46,8 @@ public class ReagentInventoryService {
             inventoryPage = inventoryRepository.findByKeyword(keyword, pageable);
         } else if (status != null && !status.isEmpty()) {
             inventoryPage = inventoryRepository.findByStatus(status, pageable);
+        } else if (alertLevel != null && !alertLevel.isEmpty()) {
+            inventoryPage = inventoryRepository.findByAlertLevel(alertLevel, pageable);
         } else if (categoryId != null) {
             inventoryPage = inventoryRepository.findByCategoryId(categoryId, pageable);
         } else if (locationId != null) {
@@ -165,6 +167,7 @@ public class ReagentInventoryService {
             inventory.setStatus("disposed");
         } else if ("unopened".equals(inventory.getStatus())) {
             inventory.setStatus("opened");
+            inventory.setOpenDate(LocalDate.now());
         }
 
         inventoryRepository.save(inventory);
@@ -228,6 +231,7 @@ public class ReagentInventoryService {
                 inventory.setStatus("disposed");
             } else if ("unopened".equals(inventory.getStatus())) {
                 inventory.setStatus("opened");
+                inventory.setOpenDate(LocalDate.now());
             }
 
             inventoryRepository.save(inventory);

@@ -66,6 +66,10 @@ export function updateAlertLevels() {
   return request.post('/reagent-inventory/update-alert-levels')
 }
 
+export function checkLocationIncompatibility(locationId: string, categoryId: string) {
+  return request.post('/reagent-inventory/check-location', null, { params: { locationId, categoryId } })
+}
+
 // ─── 交易记录 ───
 export function getTransactionList(params?: any) {
   return request.get('/reagent-transactions', { params })
@@ -78,6 +82,10 @@ export function traceByBarcode(barcode: string) {
 // ─── 位置管理 ───
 export function getLocationTree(roomId: string) {
   return request.get('/storage-locations/tree', { params: { roomId } })
+}
+
+export function getAllLocations() {
+  return request.get('/storage-locations/all')
 }
 
 export function getLocationById(id: string) {
